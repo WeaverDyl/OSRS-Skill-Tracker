@@ -20,17 +20,18 @@ public class Calculations {
 	 * Grabs the level and experience data for each player, adding it to a player
 	 * object and then adding the player object into an arraylist
 	 * 
-	 * @param list
-	 * @param skillNumber
-	 * @return
+	 * @param listOfPlayers An array of every player's username
+	 * @param skillNumber The index of the skill from Utility.skills
+	 * @return An arraylist of each players skill data, or null if an exception occurred
 	 */
-	public static List<Player> runScraper(String[] list, int skillNumber) {
-		List<Player> players = new ArrayList<>();
+	public static List<Player> runScraper(String[] listOfPlayers, int skillNumber) {
+		List<Player> playersData = new ArrayList<>();
 		
 		// Go through the entire list of players
-		for (int i = 0; i < list.length; i++) {
+		for (int i = 0; i < listOfPlayers.length; i++) {
 			try {
-				String currentLine = connect(i, list[i], skillNumber);
+				// Gets the correct line of data for the current player
+				String currentLine = connect(listOfPlayers[i], skillNumber);
 					
 				// Connect to the hiscores for the current index
 				if (currentLine != "ERROR") {
@@ -41,33 +42,33 @@ public class Calculations {
 					long experience = Long.parseLong(skillBrokenUp[2]);
 	
 					// Create a Player object and add this object to the players arrayList.
-					Player p = new Player(list[i], rank, level, experience, true);
-					players.add(p);
+					Player p = new Player(listOfPlayers[i], rank, level, experience, true);
+					playersData.add(p);
 				} else {
 					// The player name is invalid, set valid variable to false
-					Player p = new Player(list[i], -1, -1, -1, false);
-					players.add(p);
+					Player p = new Player(listOfPlayers[i], -1, -1, -1, false);
+					playersData.add(p);
 				}
 			} catch (ConnectionException e) {
-				JOptionPane.showMessageDialog(null, e.getMessage());
+				// Let the user know what they did wrong
+				JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				return null;
 			}
 		}
 		
-		return players;
+		return playersData;
 	}
 	
 	/**
 	 * For the given position, connect to the hiscores page for the username and
 	 * read the data
 	 * 
-	 * @param position
-	 * @param user
-	 * @param skillNumber
-	 * @return
+	 * @param user The specific player currently being looked at
+	 * @param skillNumber The index of the skill from Utility.skills
+	 * @return The player's rank/level/experience data for the specified skill
 	 * @throws ConnectionException 
 	 */
-	private static String connect(int position, String user, int skillNumber) throws ConnectionException {
+	private static String connect(String user, int skillNumber) throws ConnectionException {
 		// Check that the username length is valid.
 		if (user.length() > Utility.MAX_USERNAME_LENGTH) {
 			throw new ConnectionException("Username: " + user + " is too long!");

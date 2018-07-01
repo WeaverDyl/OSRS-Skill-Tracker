@@ -319,22 +319,6 @@ public class SkillTrackerGui {
 	}
 	
 	/**
-	 * Used during the loading of a file. The file contains a skill number based on which skill was being used
-	 * for calculations in that file, and when it is loaded, the button for that skill needs to be selected.
-	 * 
-	 * @param skillNumber The number corresponding to the skill (found in save files)
-	 */
-	public void setSkillButton(int skillNumber) {
-		JRadioButton[] skillButton = { rdButtonOverall, rdButtonAttack, rdButtonDefence, rdButtonStrength,
-				rdButtonHitpoints, rdButtonRanged, rdButtonPrayer, rdButtonMagic, rdButtonCooking, 
-				rdButtonWoodcutting, rdButtonFletching, rdButtonFishing, rdButtonFiremaking, rdButtonCrafting, 
-				rdButtonSmithing, rdButtonMining, rdButtonHerblore, rdButtonAgility, rdButtonThieving, rdButtonSlayer,
-				rdButtonFarming, rdButtonRunecrafting, rdButtonHunter, rdButtonConstruction };
-		
-		skillButton[skillNumber].setSelected(true);
-	}
-	
-	/**
 	 * Outputs each player's position, name, level, and experience to {@code textAreaResults}. 
 	 * Also outputs any errors that occurred to {@code textAreaErrors}
 	 */
@@ -506,6 +490,22 @@ public class SkillTrackerGui {
 				JOptionPane.showMessageDialog(frmClanSkillTracker, "Error loading file.", "Error", JOptionPane.ERROR_MESSAGE);
 	        }
 	    }
+	}
+	
+	/**
+	 * Used during the loading of a file. The file contains a skill number based on which skill was being used
+	 * for calculations in that file, and when it is loaded, the button for that skill needs to be selected.
+	 * 
+	 * @param skillNumber The number corresponding to the skill (found in save files)
+	 */
+	public void setSkillButton(int skillNumber) {
+		JRadioButton[] skillButton = { rdButtonOverall, rdButtonAttack, rdButtonDefence, rdButtonStrength,
+				rdButtonHitpoints, rdButtonRanged, rdButtonPrayer, rdButtonMagic, rdButtonCooking, 
+				rdButtonWoodcutting, rdButtonFletching, rdButtonFishing, rdButtonFiremaking, rdButtonCrafting, 
+				rdButtonSmithing, rdButtonMining, rdButtonHerblore, rdButtonAgility, rdButtonThieving, rdButtonSlayer,
+				rdButtonFarming, rdButtonRunecrafting, rdButtonHunter, rdButtonConstruction };
+		
+		skillButton[skillNumber].setSelected(true);
 	}
 	
 	/**
