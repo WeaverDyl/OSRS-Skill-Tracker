@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
 /*
@@ -17,7 +16,7 @@ public class Utility {
 	public static final int MAX_USERNAME_LENGTH = 12;
 	
 	// An array of every skill in old school runescape
-	public static final String[] skills = { "overall", "attack", "defence", "strength", "hitpoints", "ranged", "prayer",
+	public static final String[] skills = { "total", "attack", "defence", "strength", "hitpoints", "ranged", "prayer",
 			"magic", "cooking", "woodcutting", "fletching", "fishing", "firemaking", "crafting", "smithing", "mining",
 			"herblore", "agility", "thieving", "slayer", "farming", "runecrafting", "hunter", "construction" };
 	
@@ -76,16 +75,12 @@ public class Utility {
 	}
 	
 	/**
-	 * Resets a progress bar and text areas
+	 * Resets text areas
 	 * 
 	 * @param bar A JProgressBar which needs to be reset
 	 * @param toClear A list of JTextAreas which need to be cleared
 	 */
-	public static void clearAll(JProgressBar bar, JTextArea... toClear) {
-		if (bar != null) {
-			bar.setValue(0);
-		}
-		
+	public static void clearAll(JTextArea... toClear) {
 		for (JTextArea textAreas : toClear) {
 			textAreas.setText("");
 		}

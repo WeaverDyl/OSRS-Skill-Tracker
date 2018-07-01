@@ -14,9 +14,7 @@ public class Player implements Comparable<Player> {
 	private int rank; // Represents a players rank in the official hiscores
 	private int level; // Represents a players level
 	private long experience; // Represents a players experience
-	private boolean valid;
-	
-	private int i = -1; // Used as a return for the compareTo method
+	private boolean valid; // Represents whether the user exists (user in hiscores)
 
 	/**
 	 * A constructor representing a player
@@ -52,6 +50,8 @@ public class Player implements Comparable<Player> {
 	 *            ranks, and these are never the same regardless of other data.
 	 */
 	public int compareTo(Player other) {
+		int i = -1;
+		
 		if (this.level > other.level) {
 			i = 1;
 		} else if (other.level > this.level) {
@@ -96,7 +96,7 @@ public class Player implements Comparable<Player> {
 	}
 
 	/**
-	 * Represents a player as a string.
+	 * @return .
 	 */
 	public String toString() {
 		return "\"" + name.replaceAll(" ", "_") + "\"" + " total level: " + level + " with "
@@ -111,6 +111,7 @@ public class Player implements Comparable<Player> {
 			return true;
 		} else if (p instanceof Player) {
 			Player player = (Player) p;
+			// Equality is based on players having the same name, level, and experience
 			result = name.equals(player.name) && level == player.level && experience == player.experience;
 		}
 		

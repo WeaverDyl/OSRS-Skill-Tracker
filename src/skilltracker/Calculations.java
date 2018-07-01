@@ -50,9 +50,12 @@ public class Calculations {
 					playersData.add(p);
 				}
 			} catch (ConnectionException e) {
-				// Let the user know what they did wrong
+				// Add the invalid player to the list of players
+				Player p = new Player(listOfPlayers[i], -1, -1, -1, false);
+				playersData.add(p);
+				
+				// Let the user know what went wrong
 				JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				return null;
 			}
 		}
 		
@@ -66,15 +69,14 @@ public class Calculations {
 	 * @param user The specific player currently being looked at
 	 * @param skillNumber The index of the skill from Utility.skills
 	 * @return The player's rank/level/experience data for the specified skill
-	 * @throws ConnectionException 
+	 * @throws ConnectionException when the user is not in the hiscores
 	 */
 	private static String connect(String user, int skillNumber) throws ConnectionException {
-		// Check that the username length is valid.
+		// Check that the username length is valid. Throw exception if not
 		if (user.length() > Utility.MAX_USERNAME_LENGTH) {
 			throw new ConnectionException("Username: " + user + " is too long!");
 		}
-		// Connect to the hiscores using the username found at the position index of
-		// Utlity.playersList
+		// Connect to the hiscores using the username found at the position index of Utility.playersList
 		String stringURL = "http://services.runescape.com/m=hiscore_oldschool/index_lite.ws?player=" + user;
 		try {
 			URL url = new URL(stringURL);
@@ -83,13 +85,13 @@ public class Calculations {
 			// Go through the URL content and skip to the line that contains the skill we want
 			try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
 				for (int i = 0; i < skillNumber; i++) {
-					br.readLine();
+					br.readLine(); // Keep reading data that we don't need
 				}
 				// Read the line of data (which contains level, rank, and experience for the selected skill)
 				return br.readLine();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			// Let the user know what went wrong
 			throw new ConnectionException("Something went wrong! Check Username: " + user);
 		}
 	}

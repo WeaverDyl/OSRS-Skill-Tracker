@@ -2,13 +2,13 @@ package skillcalculator;
 
 /**
  * 
- * @author Dylan
+ * @author Dylan Weaver
  *
  */
 public class PlayerResult {
-	private String username;
-	private int experienceGained;
-	private int levelsGained;
+	private String username; //
+	private long experienceGained; //
+	private int levelsGained; //
 	
 	/**
 	 * 
@@ -16,20 +16,29 @@ public class PlayerResult {
 	 * @param experienceGained
 	 * @param levelsGained
 	 */
-	public PlayerResult(String username, int experienceGained, int levelsGained) {
+	public PlayerResult(String username, long experienceGained, int levelsGained) {
 		this.username = username;
 		this.experienceGained = experienceGained;
 		this.levelsGained = levelsGained;
 	}
 	
+	/**
+	 * @return
+	 */
 	public String getUsername() {
 		return username;
 	}
 	
-	public int getExperienceGained() {
+	/**
+	 * @return
+	 */
+	public long getExperienceGained() {
 		return experienceGained;
 	}
 	
+	/**
+	 * @return
+	 */
 	public int getLevelsGained() {
 		return levelsGained;
 	}

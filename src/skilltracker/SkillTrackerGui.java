@@ -1,28 +1,9 @@
 package skilltracker;
 
 import java.awt.EventQueue;
-
-import javax.swing.ButtonGroup;
-import javax.swing.JFrame;
-import java.awt.Toolkit;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
 import java.awt.Font;
-import javax.swing.JRadioButton;
-import javax.swing.UIManager;
-
-import skillcalculator.FinalCalculatorGUI;
-import skillcalculator.InvalidSaveException;
-
-import javax.swing.JComponent;
-import javax.swing.JTextArea;
-import javax.swing.JScrollPane;
-import javax.swing.JProgressBar;
-import javax.swing.JSeparator;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -31,10 +12,27 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.awt.event.ActionEvent;
+import java.util.ListIterator;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
+import javax.swing.UIManager;
+
+import skillcalculator.FinalCalculatorGUI;
+import skillcalculator.InvalidSaveException;
+import skillcalculator.PlayerDataComparator;
 
 /**
  * This class handles building the user interface and handles the processing
@@ -51,20 +49,20 @@ public class SkillTrackerGui {
 	private JLabel labelEnterNames = new JLabel("Enter Names:");
 	private JLabel labelExperience = new JLabel("Experience:");
 	private JLabel labelLevels = new JLabel("Levels:");
+	private JLabel labelCurrentData = new JLabel("Current Data:");
 	private JLabel labelErrors = new JLabel("Errors:");
-	private JLabel labelProgress = new JLabel("Progress:");
 	
 	private JScrollPane scrollPanePlayers = new JScrollPane();
 	private JScrollPane scrollPaneExperience = new JScrollPane();
 	private JScrollPane scrollPaneLevels = new JScrollPane();
+	private JScrollPane scrollPaneCurrentData = new JScrollPane();
 	private JScrollPane scrollPaneErrors = new JScrollPane();
 	
 	private JTextArea textAreaPlayers = new JTextArea();
 	private JTextArea textAreaExperience = new JTextArea();
 	private JTextArea textAreaLevels = new JTextArea();
+	private JTextArea textAreaCurrentData = new JTextArea();
 	private JTextArea textAreaErrors = new JTextArea();
-	
-	private JProgressBar progressBar = new JProgressBar();
 	
 	private JButton buttonCalculate = new JButton("Calculate");
 	private JButton buttonClearAll = new JButton("Clear All");
@@ -99,7 +97,7 @@ public class SkillTrackerGui {
 	private JRadioButton rdButtonFiremaking = new JRadioButton("Firemaking");
 	private JRadioButton rdButtonWoodcutting = new JRadioButton("Woodcutting");
 	private JRadioButton rdButtonFarming = new JRadioButton("Farming");
-	private JRadioButton rdButtonOverall = new JRadioButton("Overall");
+	private JRadioButton rdButtonTotal = new JRadioButton("Total");
 	
 	private ButtonGroup skillButtonGroup = new ButtonGroup();
 	
@@ -141,16 +139,16 @@ public class SkillTrackerGui {
 	private void initialize() {
 		frmClanSkillTracker.setIconImage(Toolkit.getDefaultToolkit().getImage(SkillTrackerGui.class.getResource("/media/overall.gif")));
 		frmClanSkillTracker.setResizable(false);
-		frmClanSkillTracker.setBounds(100, 100, 901, 561);
+		frmClanSkillTracker.setBounds(100, 100, 901, 733);
 		frmClanSkillTracker.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmClanSkillTracker.getContentPane().setLayout(null);
 		
 		// List of all the components, makes adding components to the frame easier.
 		JComponent[] listOfComponents = new JComponent[] { labelSelectSkill, labelExperience, labelLevels,
-				labelEnterNames, scrollPanePlayers, scrollPaneExperience, scrollPaneLevels, scrollPaneErrors,
-				textAreaPlayers, textAreaExperience, textAreaLevels, textAreaErrors, progressBar, labelErrors,
-				labelProgress, buttonCalculate, buttonClearAll, buttonSave, buttonLoad, buttonInstructions, 
-				buttonResults, separatorErrors, separatorSkills };
+				labelCurrentData, labelEnterNames, scrollPanePlayers, scrollPaneExperience, scrollPaneLevels, 
+				scrollPaneErrors, scrollPaneCurrentData, textAreaPlayers, textAreaExperience, textAreaLevels, 
+				textAreaCurrentData, textAreaErrors, labelErrors, buttonCalculate, buttonClearAll, buttonSave, 
+				buttonLoad, buttonInstructions, buttonResults, separatorErrors, separatorSkills };
 		
 		// Go through each component and add it to the frame. Also sets the font settings for JLabels
 		for (JComponent component : listOfComponents) {
@@ -166,25 +164,24 @@ public class SkillTrackerGui {
 		labelEnterNames.setBounds(343, 12, 80, 14);
 		labelExperience.setBounds(343, 184, 80, 14);
 		labelLevels.setBounds(343, 356, 46, 14);
+		labelCurrentData.setBounds(343, 528, 100, 14);
 		labelErrors.setBounds(10, 245, 46, 14);
-		labelProgress.setBounds(10, 496, 69, 14);
 		
 		scrollPanePlayers.setBounds(343, 32, 538, 141);
 		scrollPaneExperience.setBounds(343, 204, 538, 141);
 		scrollPaneLevels.setBounds(343, 376, 538, 141);
-		scrollPaneErrors.setBounds(10, 266, 323, 149);
-		
-		progressBar.setBounds(78, 494, 255, 23);
+		scrollPaneCurrentData.setBounds(343, 548, 538, 141);
+		scrollPaneErrors.setBounds(10, 266, 323, 356);
 		
 		separatorSkills.setBounds(10, 240, 323, 2);
-		separatorErrors.setBounds(10, 420, 323, 2);
+		separatorErrors.setBounds(10, 628, 323, 2);
 		
-		buttonCalculate.setBounds(10, 426, 89, 23);
-		buttonClearAll.setBounds(244, 426, 89, 23);
-		buttonSave.setBounds(127, 426, 89, 23);
-		buttonLoad.setBounds(127, 460, 89, 23);
-		buttonInstructions.setBounds(244, 460, 89, 23);
-		buttonResults.setBounds(10, 460, 89, 23);
+		buttonCalculate.setBounds(10, 634, 89, 23);
+		buttonClearAll.setBounds(244, 634, 89, 23);
+		buttonSave.setBounds(127, 634, 89, 23);
+		buttonLoad.setBounds(127, 668, 89, 23);
+		buttonInstructions.setBounds(244, 668, 89, 23);
+		buttonResults.setBounds(10, 668, 89, 23);
 
 		// Handles settings for the textAreas and scrollPanes
 		textAreaPlayers.setLineWrap(true);
@@ -197,11 +194,13 @@ public class SkillTrackerGui {
 		textAreaLevels.setLineWrap(true);
 		textAreaLevels.setEditable(false);
 		scrollPaneLevels.setViewportView(textAreaLevels);
+		
+		textAreaCurrentData.setLineWrap(true);
+		textAreaCurrentData.setEditable(false);
+		scrollPaneCurrentData.setViewportView(textAreaCurrentData);
 
 		scrollPaneErrors.setViewportView(textAreaErrors);
 		textAreaErrors.setEditable(false);
-
-		progressBar.setStringPainted(true);
 		
 		// Calculate actionListener
 		buttonCalculate.addActionListener(new ActionListener() {
@@ -212,7 +211,7 @@ public class SkillTrackerGui {
 		// Clear All actionListener
 		buttonClearAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Utility.clearAll(progressBar, textAreaPlayers, textAreaExperience, textAreaLevels, 
+				Utility.clearAll(textAreaPlayers, textAreaExperience, textAreaLevels, 
 						textAreaErrors);
 				skillButtonGroup.clearSelection();
 				skillNumber = -1;
@@ -284,7 +283,7 @@ public class SkillTrackerGui {
 	 * Handles the skill buttons, their buttongroup and actionListeners
 	 */
 	public void initializeSkillButtons() {
-		JRadioButton[] columnOne = new JRadioButton[] { rdButtonOverall, rdButtonAttack, rdButtonDefence, rdButtonStrength,
+		JRadioButton[] columnOne = new JRadioButton[] { rdButtonTotal, rdButtonAttack, rdButtonDefence, rdButtonStrength,
 				rdButtonHitpoints, rdButtonRanged, rdButtonPrayer, rdButtonMagic };
 		
 		JRadioButton[] columnTwo = new JRadioButton[] { rdButtonCooking, rdButtonWoodcutting, rdButtonFletching, rdButtonFishing,
@@ -324,6 +323,7 @@ public class SkillTrackerGui {
 	 */
 	private void printResultsToScreen() {
 		List<Player> players = new ArrayList<>(); // Will contain player's skill data
+		List<Player> playersSorted = new ArrayList<>(); // Used to print current data
 		List<Player> playerErrors = new ArrayList<>(); // Contains any invalid player names
 		
 		// Only continue if there are names to process
@@ -338,28 +338,47 @@ public class SkillTrackerGui {
 			// with the wrong data
 			verifySkillNumber = skillNumber;
 			// Clear the results and errors so that they don't stack up upon consecutive runs
-			Utility.clearAll(progressBar, textAreaExperience, textAreaLevels, textAreaErrors);
+			Utility.clearAll(textAreaExperience, textAreaLevels, textAreaCurrentData, textAreaErrors);
 			String[] arrayOfPlayers = textAreaPlayers.getText().split(", ");
 			
 			// Collect data from each player for the specified skill
 			players = Calculations.runScraper(arrayOfPlayers, skillNumber); 
 			
+			// Add elements of players into playersSorted
+			for (int i = 0; i < players.size(); i++) {
+				playersSorted.add(players.get(i));
+			}
+			// sort players based on experience and level
+			Collections.sort(playersSorted, new PlayerDataComparator().reversed());
+			
 			if (players != null) {
-				Iterator<Player> play = players.iterator(); // An iterator for the list of players
-				while (play.hasNext()) {
-					Player currPlayer = play.next(); // The current player
+				ListIterator<Player> playerIterator = players.listIterator(); // An iterator for the list of players
+				while (playerIterator.hasNext()) {
+					Player currPlayer = playerIterator.next(); // The current player
 					
 					// If the current player is invalid (bad name), add it to the
 					// error list and remove it
 					if (!currPlayer.getValid()) {
 						playerErrors.add(currPlayer);
-						play.remove(); // Remove the invalid player
+						playerIterator.remove(); // Remove the invalid player
 					} else {
-						progressBar.setValue(100); // Eventually remove this
-						
 						// Add the (valid) player's experience and level data
-						textAreaExperience.append(currPlayer.getExperience() + (play.hasNext() ? "," : ""));
-						textAreaLevels.append(currPlayer.getLevel() + (play.hasNext() ? "," : ""));
+						textAreaExperience.append(currPlayer.getExperience() + (playerIterator.hasNext() ? "," : ""));
+						textAreaLevels.append(currPlayer.getLevel() + (playerIterator.hasNext() ? "," : ""));
+					}
+				}
+				
+				ListIterator<Player> playerSortedIterator = playersSorted.listIterator(); // An iterator for the list of players
+				while (playerSortedIterator.hasNext()) {
+					Player currPlayer = playerSortedIterator.next(); // The current player
+					
+					// If the player is valid, collect their skill rank relative to the others
+					if (currPlayer.getValid()) {
+						int currentPlace = playerSortedIterator.nextIndex(); // The current number of players we've seen
+						String currentSkill = Utility.skills[skillNumber]; // The skill we're collecting data for
+						textAreaCurrentData.append(currentPlace + Utility.getPositionSuffix(currentPlace) + "\"" + 
+								currPlayer.getName() + "\" " + currentSkill + " level: " + currPlayer.getLevel() + 
+								" with " + currPlayer.getExperience() + " xp\n"); // The message to append to the text box
 					}
 				}
 				// Handles printing the list of errors to the screen (if there are any)
@@ -427,6 +446,9 @@ public class SkillTrackerGui {
 	        	fw.write("\nPLAYER LEVEL DATA:\n");
 	            fw.write(Utility.newLineGenerator(textAreaLevels.getText()));
 	            
+	            fw.write("\nPLAYER SKILL DATA:\n");
+	            fw.write(textAreaCurrentData.getText());
+	            
 	            fw.write("\nPLAYER ERROR DATA:\n");
 	            fw.write(textAreaErrors.getText());
 	        } catch (Exception e) {
@@ -455,9 +477,8 @@ public class SkillTrackerGui {
 	    				// If the file is valid, clear the JTextArea being used to write the data to, and
 	    				// write the data to it.
 	    				if (Utility.getFileExtension(chooser.getSelectedFile()).equals("txt")) {
-	    	        		Utility.clearAll(progressBar, textAreaPlayers, textAreaExperience, textAreaLevels, 
-	    	        				textAreaErrors);
-	    	        		
+	    	        		Utility.clearAll(textAreaPlayers, textAreaExperience, textAreaLevels, 
+	    	        				textAreaCurrentData, textAreaErrors);
 		    				// Retrieves the skillNumber from in between the set of parentheses on the first line
 		    				skillNumber = Integer.parseInt(Utility.getMatch(br.readLine(), "\\((\\d+)\\)"));
 		    				setSkillButton(skillNumber);
@@ -499,7 +520,7 @@ public class SkillTrackerGui {
 	 * @param skillNumber The number corresponding to the skill (found in save files)
 	 */
 	public void setSkillButton(int skillNumber) {
-		JRadioButton[] skillButton = { rdButtonOverall, rdButtonAttack, rdButtonDefence, rdButtonStrength,
+		JRadioButton[] skillButton = { rdButtonTotal, rdButtonAttack, rdButtonDefence, rdButtonStrength,
 				rdButtonHitpoints, rdButtonRanged, rdButtonPrayer, rdButtonMagic, rdButtonCooking, 
 				rdButtonWoodcutting, rdButtonFletching, rdButtonFishing, rdButtonFiremaking, rdButtonCrafting, 
 				rdButtonSmithing, rdButtonMining, rdButtonHerblore, rdButtonAgility, rdButtonThieving, rdButtonSlayer,

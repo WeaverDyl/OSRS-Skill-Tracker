@@ -191,7 +191,7 @@ public class FinalCalculatorGUI {
 // TODO don't use a string as a check you dingus
 	void load(String beforeOrAfter) {
 		List<String> playerUsernames = new ArrayList<>();
-		List<Integer> playerExperience = new ArrayList<>();
+		List<Long> playerExperience = new ArrayList<>();
 		List<Integer> playerLevels = new ArrayList<>();
 		
 		
@@ -233,7 +233,7 @@ public class FinalCalculatorGUI {
 		    	        				if (!line.equals("PLAYER LEVEL DATA:") && !line.equals("")) {
 		    	        					List<String> playerExperienceString = Arrays.asList(line.replaceAll(", ", ",").split(","));
 		    	        					for (int i = 0; i < playerExperienceString.size(); i++) {
-		    	        						playerExperience.add(Integer.parseInt(playerExperienceString.get(i)));
+		    	        						playerExperience.add(Long.parseLong(playerExperienceString.get(i)));
 		    	        					}
 		    	        				} else {
 		    	        					break;
@@ -242,7 +242,7 @@ public class FinalCalculatorGUI {
 		    	        		}
 		    	        		if (line.equals("PLAYER LEVEL DATA:")) {
 	    	        					while ((line = br.readLine()) != null) {
-			    	        				if (!line.equals("PLAYER ERROR DATA:") && !line.equals("")) {
+			    	        				if (!line.equals("PLAYER SKILL DATA:") && !line.equals("")) {
 			    	        					List<String> playerLevelsString = Arrays.asList(line.replaceAll(", ", ",").split(","));
 			    	        					for (int i = 0; i < playerLevelsString.size(); i++) {
 			    	        						playerLevels.add(Integer.parseInt(playerLevelsString.get(i)));
@@ -321,7 +321,7 @@ public class FinalCalculatorGUI {
 		Collections.sort(finalResults, new PlayerResultExperienceComparator().reversed());
 		int positionExperience = 1;
 		for (int i = 0; i < finalResults.size(); i++) {
-			textAreaExperienceWinners.append(positionExperience +skilltracker.Utility.getPositionSuffix(positionExperience)+ " " + 
+			textAreaExperienceWinners.append(positionExperience + skilltracker.Utility.getPositionSuffix(positionExperience)+ " " + 
 					finalResults.get(i).getUsername() + " with " + finalResults.get(i).getExperienceGained() + " experience.\n");
 			positionExperience++;
 		}
