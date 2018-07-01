@@ -13,7 +13,7 @@ import java.util.List;
  * @author Dylan Weaver
  *
  */
-public class Calculations implements Runnable {
+public class Calculations {
 	// An arraylist of player objects which will later be sorted and printed
 	static List<Player> players = new ArrayList<>();
 	// Any excluded players (due to errors) will br place in here
@@ -44,11 +44,12 @@ public class Calculations implements Runnable {
 			URL url = new URL(stringURL);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-				for (int i = 0; i <= skillNumber; i++) {
+				for (int i = 0; i < skillNumber; i++) {
 					br.readLine();
 				}
 				// Read the line of data (which contains level, rank, and experience for the selected skill)
 				currentLine = br.readLine();
+				System.out.println("CURRENT LINE: " + currentLine);
 			}
 			return true;
 		} catch (Exception e) {
@@ -70,6 +71,7 @@ public class Calculations implements Runnable {
 		for (int i = 0; i < list.length; i++) {
 			// Connect to the hiscores for the current index
 			if (connect(i, list[i].replaceAll("[^a-zA-Z0-9-_ ]", ""), skillNumber)) {
+				System.out.println(skillNumber);
 				// Break up the line into an array of rank, level, and experience respectively
 				String[] skillBrokenUp = currentLine.replaceAll(" ", "").split(",");
 				int rank = Integer.parseInt(skillBrokenUp[0]);
@@ -86,10 +88,6 @@ public class Calculations implements Runnable {
 			}
 		}
 		return players;
-	}
-	
-	public void run() {
-		
 	}
 
 }

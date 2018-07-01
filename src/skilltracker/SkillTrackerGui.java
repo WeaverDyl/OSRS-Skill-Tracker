@@ -281,14 +281,14 @@ public class SkillTrackerGui {
 	 * Handles the skill buttons, their buttongroup and actionListeners
 	 */
 	public void initializeSkillButtons() {
-		JRadioButton[] columnOne = new JRadioButton[] { rdButtonAttack, rdButtonDefence, rdButtonStrength,
-				rdButtonHitpoints, rdButtonRanged, rdButtonPrayer, rdButtonMagic, rdButtonCooking };
+		JRadioButton[] columnOne = new JRadioButton[] { rdButtonOverall, rdButtonAttack, rdButtonDefence, rdButtonStrength,
+				rdButtonHitpoints, rdButtonRanged, rdButtonPrayer, rdButtonMagic };
 		
-		JRadioButton[] columnTwo = new JRadioButton[] { rdButtonWoodcutting, rdButtonFletching, rdButtonFishing,
-				rdButtonFiremaking, rdButtonCrafting, rdButtonSmithing, rdButtonMining, rdButtonHerblore };
+		JRadioButton[] columnTwo = new JRadioButton[] { rdButtonCooking, rdButtonWoodcutting, rdButtonFletching, rdButtonFishing,
+				rdButtonFiremaking, rdButtonCrafting, rdButtonSmithing, rdButtonMining };
 		
-		JRadioButton[] columnThree = new JRadioButton[] { rdButtonAgility, rdButtonThieving, rdButtonSlayer,
-				rdButtonFarming, rdButtonRunecrafting, rdButtonHunter, rdButtonConstruction, rdButtonOverall };
+		JRadioButton[] columnThree = new JRadioButton[] { rdButtonHerblore, rdButtonAgility, rdButtonThieving, rdButtonSlayer,
+				rdButtonFarming, rdButtonRunecrafting, rdButtonHunter, rdButtonConstruction };
 
 		//Adds the first column of skills to the frame, and also adds them to a button group and actionListener
 		for (int i = 0; i < columnOne.length; i++) {
