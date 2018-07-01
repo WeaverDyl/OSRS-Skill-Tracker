@@ -154,14 +154,14 @@ public class FinalCalculatorGUI {
 		// Action Listener for the loadBefore button
 		buttonLoadBefore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				loadBefore();
+				load("before");
 			}
 		});
 		
 		// Action Listener for the loadAfter button
 		buttonLoadAfter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				loadAfter();
+				load("after");
 			}
 		});
 		
@@ -188,8 +188,8 @@ public class FinalCalculatorGUI {
 	/**
 	 * 
 	 */
-//TODO Shorten this
-	void loadBefore() {
+// TODO don't use a string as a check you dingus
+	void load(String beforeOrAfter) {
 		List<String> playerUsernames = new ArrayList<>();
 		List<Integer> playerExperience = new ArrayList<>();
 		List<Integer> playerLevels = new ArrayList<>();
@@ -206,9 +206,15 @@ public class FinalCalculatorGUI {
 	    				// If the file is valid, clear the JTextArea being used to write the data to, and
 	    				// write the data to it.
 	    				if (Utility.getFileExtension(chooser.getSelectedFile()).equals("txt")) {
-		    				// Retrieves the skillNumber from in between the set of parentheses on the first line
-	    					String skillBefore = Utility.skills[Integer.parseInt(Utility.getMatch(br.readLine(), "\\((\\d+)\\)"))];
-	    					labelSkillNameBefore.setText(skillBefore);
+	    					if (beforeOrAfter == "before") {
+			    				// Retrieves the skillNumber from in between the set of parentheses on the first line
+		    					String skillBefore = Utility.skills[Integer.parseInt(Utility.getMatch(br.readLine(), "\\((\\d+)\\)"))];
+		    					labelSkillNameBefore.setText(skillBefore);
+	    					} else {
+			    				// Retrieves the skillNumber from in between the set of parentheses on the first line
+		    					String skillAfter = Utility.skills[Integer.parseInt(Utility.getMatch(br.readLine(), "\\((\\d+)\\)"))];
+		    					labelSkillNameAfter.setText(skillAfter);
+	    					}
 	    	        		
 	    	        		String line = null;
 	    	        		while ((line = br.readLine()) != null) {
@@ -248,10 +254,15 @@ public class FinalCalculatorGUI {
 	    	        				}
 	    	        			}
 	    	        		
-	    	        		labelPlayerCountBefore.setText(String.valueOf(playerUsernames.size()));
 	    	        		if (skilltracker.Utility.areSameLength(playerUsernames.toArray(), playerExperience.toArray(), playerLevels.toArray())) {
 	    	        			for (int i = 0; i < playerUsernames.size(); i++) {
-	    	        				playerDataBefore.add(new PlayerResult(playerUsernames.get(i), playerExperience.get(i), playerLevels.get(i)));
+	    	    					if (beforeOrAfter == "before") {
+	    		    	        		labelPlayerCountBefore.setText(String.valueOf(playerUsernames.size()));
+	    	    						playerDataBefore.add(new PlayerResult(playerUsernames.get(i), playerExperience.get(i), playerLevels.get(i)));
+	    	    					} else {
+	    		    	        		labelPlayerCountAfter.setText(String.valueOf(playerUsernames.size()));
+	    	    						playerDataAfter.add(new PlayerResult(playerUsernames.get(i), playerExperience.get(i), playerLevels.get(i)));
+	    	    					}
 	    	        			}
 	    	        		}
 	    				}
@@ -271,94 +282,6 @@ public class FinalCalculatorGUI {
 	    }
 	}
 
-	/**
-	 * 
-	 */
-//TODO Shorten this
-	void loadAfter() {
-		List<String> playerUsernames = new ArrayList<>();
-		List<Integer> playerExperience = new ArrayList<>();
-		List<Integer> playerLevels = new ArrayList<>();
-		
-		
-		JFileChooser chooser = new JFileChooser();
-	    chooser.setDialogTitle("Load");
-	    int retrival = chooser.showSaveDialog(null);
-	    if (retrival == JFileChooser.APPROVE_OPTION) {
-	        try {
-	        	// Create a new FileReader wrapped in a BufferedReader that will read the selected file.
-	        	try (BufferedReader br = new BufferedReader(new FileReader(chooser.getSelectedFile()))) {
-	    			try {
-	    				// If the file is valid, clear the JTextArea being used to write the data to, and
-	    				// write the data to it.
-	    				if (Utility.getFileExtension(chooser.getSelectedFile()).equals("txt")) {
-		    				// Retrieves the skillNumber from in between the set of parentheses on the first line
-	    					String skillAfter = Utility.skills[Integer.parseInt(Utility.getMatch(br.readLine(), "\\((\\d+)\\)"))];
-	    					labelSkillNameAfter.setText(skillAfter);
-	    	        		
-	    	        		String line = null;
-	    	        		while ((line = br.readLine()) != null) {
-	    	        			// Loads the username data, placing it in textAreaPlayers
-		    	        		if (line.equals("PLAYER USERNAME DATA:")) {
-		    	        			while ((line = br.readLine()) != null) {
-		    	        				if (!line.equals("PLAYER EXPERIENCE DATA:")) {
-		    	        					playerUsernames.addAll(Arrays.asList(line.replaceAll(", ", ",").split(",")));
-		    	        				} else {
-					    	        		break;
-		    	        				}
-		    	        			}
-		    	        		}
-		    	        		if (line.equals("PLAYER EXPERIENCE DATA:")) {
-    	        					while ((line = br.readLine()) != null) {
-		    	        				if (!line.equals("PLAYER LEVEL DATA:") && !line.equals("")) {
-		    	        					List<String> playerExperienceString = Arrays.asList(line.replaceAll(", ", ",").split(","));
-		    	        					for (int i = 0; i < playerExperienceString.size(); i++) {
-		    	        						playerExperience.add(Integer.parseInt(playerExperienceString.get(i)));
-		    	        					}
-		    	        				} else {
-		    	        					break;
-		    	        				}
-    	        					}
-		    	        		}
-		    	        		if (line.equals("PLAYER LEVEL DATA:")) {
-	    	        					while ((line = br.readLine()) != null) {
-			    	        				if (!line.equals("PLAYER ERROR DATA:") && !line.equals("")) {
-			    	        					List<String> playerLevelsString = Arrays.asList(line.replaceAll(", ", ",").split(","));
-			    	        					for (int i = 0; i < playerLevelsString.size(); i++) {
-			    	        						playerLevels.add(Integer.parseInt(playerLevelsString.get(i)));
-			    	        					}
-			    	        				} else {
-			    	        					break;
-			    	        				}
-	    	        					}
-	    	        				}
-	    	        			}
-	    	        		
-	    	        		labelPlayerCountAfter.setText(String.valueOf(playerUsernames.size()));
-	    	        		if (skilltracker.Utility.areSameLength(playerUsernames.toArray(), playerExperience.toArray(), playerLevels.toArray())) {
-	    	        			for (int i = 0; i < playerUsernames.size(); i++) {
-	    	        				playerDataAfter.add(new PlayerResult(playerUsernames.get(i), playerExperience.get(i), playerLevels.get(i)));
-	    	        			}
-	    	        		} else {
-	    	        			//throw exception
-	    	        		}
-	    				}
-	    				// Throw an exception if the selected file does not have a .txt extension.
-	    				else {
-	    					throw new FileFormatException("Invalid file type!\nThis program currently only supports .txt files.");
-	    				}
-	    			} catch (FileFormatException e) {
-	    				e.printStackTrace();
-	    				JOptionPane.showMessageDialog(frmCalculateResults, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-	    			}
-	    		}
-	        } catch (Exception e) {
-	            e.printStackTrace();
-				JOptionPane.showMessageDialog(frmCalculateResults, "Error loading file.", "Error", JOptionPane.ERROR_MESSAGE);
-	        }
-	    }
-	}
-	
 	/**
 	 * Calculates the winner by comparing the data between the two files
 	 */

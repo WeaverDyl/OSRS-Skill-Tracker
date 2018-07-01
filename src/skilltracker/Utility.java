@@ -8,7 +8,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
 /*
- * Contains many useful methods for the Skill Tracker tool
+ * Contains many useful methods for the Skill Tracker Tool
  * 
  * @author Dylan Weaver
  */
@@ -17,10 +17,9 @@ public class Utility {
 	public static final int MAX_USERNAME_LENGTH = 12;
 	
 	// An array of every skill in old school runescape
-	public static final String[] skills = { "attack", "defence", "strength", "hitpoints", "ranged", "prayer",
+	public static final String[] skills = { "overall", "attack", "defence", "strength", "hitpoints", "ranged", "prayer",
 			"magic", "cooking", "woodcutting", "fletching", "fishing", "firemaking", "crafting", "smithing", "mining",
 			"herblore", "agility", "thieving", "slayer", "farming", "runecrafting", "hunter", "construction" };
-	
 	
 	/**
 	 * Determines which suffix to use at the end of a given position (st, th, nd, rd)
@@ -129,6 +128,11 @@ public class Utility {
 		return "";
 	}
 	
+	/**
+	 * Determines if the arrays passed in are the same length
+	 * @param arrays The arrays to check
+	 * @return true if every array is the same length, false otherwise
+	 */
 	public static boolean areSameLength(Object[]... arrays) {
 		int firstLength = arrays[0].length;
 		for (Object[] playerData : arrays) {

@@ -28,17 +28,14 @@ public class Calculations {
 	 * @param position The current index of the array
 	 */
 	private static boolean connect(int position, String user, int skillNumber) {
-		// Resolves a previous issue where a spare space would erroneously add a user to the errorList
-		user = user.trim().replaceAll("[^a-zA-Z0-9-_ ]", "");
 		// Check that the username length is valid, and if it isn't, don't process it, and add it to playerErrors.
-		if (user.length() > 12) {
-			playerErrors.add(user.trim().replaceAll("[^a-zA-Z0-9-_ ]", "").replaceAll(" ", "_"));
+		if (user.length() > Utility.MAX_USERNAME_LENGTH) {
+			playerErrors.add(user);
 			return false;
 		}
 		// Connect to the hiscores using the username found at the position index of
 		// Utlity.playersList
-		String stringURL = "http://services.runescape.com/m=hiscore_oldschool/index_lite.ws?player="
-				+ user.trim().replaceAll("[^a-zA-Z0-9-_ ]", "").replaceAll(" ", "_");
+		String stringURL = "http://services.runescape.com/m=hiscore_oldschool/index_lite.ws?player=" + user;
 		try {
 			// Open a connection to StringUrl
 			URL url = new URL(stringURL);
@@ -49,12 +46,11 @@ public class Calculations {
 				}
 				// Read the line of data (which contains level, rank, and experience for the selected skill)
 				currentLine = br.readLine();
-				System.out.println("CURRENT LINE: " + currentLine);
 			}
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			playerErrors.add(user.trim().replaceAll("[^a-zA-Z0-9-_ ]", ""));
+			playerErrors.add(user);
 			return false;
 		}
 	}
@@ -70,8 +66,7 @@ public class Calculations {
 		// Go through the entire list of players
 		for (int i = 0; i < list.length; i++) {
 			// Connect to the hiscores for the current index
-			if (connect(i, list[i].replaceAll("[^a-zA-Z0-9-_ ]", ""), skillNumber)) {
-				System.out.println(skillNumber);
+			if (connect(i, list[i], skillNumber)) {
 				// Break up the line into an array of rank, level, and experience respectively
 				String[] skillBrokenUp = currentLine.replaceAll(" ", "").split(",");
 				int rank = Integer.parseInt(skillBrokenUp[0]);
@@ -79,12 +74,8 @@ public class Calculations {
 				long experience = Long.parseLong(skillBrokenUp[2]);
 
 				// Create a Player object and add this object to the players arrayList.
-				Player p = new Player(list[i].trim().replaceAll("[^a-zA-Z0-9-_ ]", ""), rank, level, experience);
-//TODO remove 81-84? this would ruin the result indexing
-				// Don't add the player to the list if it is already in it. Is there a more efficient way to do this?
-				if(!players.contains(p)) {
-					players.add(p);
-				}
+				Player p = new Player(list[i], rank, level, experience);
+				players.add(p);
 			}
 		}
 		return players;

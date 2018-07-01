@@ -403,7 +403,6 @@ public class SkillTrackerGui {
 		    	// If the user says 'no', bring up the save dialog again so they can choose a new path or filename
 		    	case JOptionPane.NO_OPTION:
 					save();
-					return;
 		    	default:
 		    		return;
 		    	}
