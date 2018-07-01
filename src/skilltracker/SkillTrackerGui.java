@@ -30,7 +30,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.awt.event.ActionEvent;
 
 /**
@@ -336,6 +339,9 @@ public class SkillTrackerGui {
 	 * Also outputs any errors that occurred to {@code textAreaErrors}
 	 */
 	private void printResultsToScreen() {
+		List<Player> players = new ArrayList<>(); // Will contain player's skill data
+		List<Player> playerErrors = new ArrayList<>(); // Contains any invalid player names
+		
 		// Only continue if there are names to process
 		if(!textAreaPlayers.getText().isEmpty()) {
 			// Check that a skill is even selected before doing any processing
@@ -349,28 +355,43 @@ public class SkillTrackerGui {
 			verifySkillNumber = skillNumber;
 			// Clear the results and errors so that they don't stack up upon consecutive runs
 			Utility.clearAll(progressBar, textAreaExperience, textAreaLevels, textAreaErrors);
-			// Create an array of player names by splitting textAreaPlayers anywhere a comma appears
-			String[] arrayOfPlayers = textAreaPlayers.getText().replaceAll(",", ", ").split(", ");
-			Calculations.runScraper(arrayOfPlayers, skillNumber);
-			for (int i = 0; i < Calculations.players.size(); i++) {
-//TODO Put progressBar and textAreaResults.append processes on a seperate thread
-				progressBar.setValue(((i + 1) / Calculations.players.size()) * 100);
-				textAreaExperience.append(Calculations.players.get(i).getExperience() + (i < Calculations.players.size() - 1 ? "," : ""));
-				textAreaLevels.append(Calculations.players.get(i).getLevel() + (i < Calculations.players.size() - 1 ? "," : ""));
-			}
-			// Handles printing the list of errors to the screen (if there are any)
-			if (Calculations.playerErrors.isEmpty()) {
-				textAreaErrors.setText("None!");
-			} else {
-				// Go through the list of errors, and print out a specific response if it is known why the error
-				// could have occurred, or a generic response otherwise
-				for (int i = 0; i < Calculations.playerErrors.size(); i++) {
-					if (Calculations.playerErrors.get(i).length() > Utility.MAX_USERNAME_LENGTH) {
-						textAreaErrors.append("\"" + Calculations.playerErrors.get(i).replaceAll("\"", "") + 
-								"\"" + " ERROR! This name contains more than 12 characters.\n");
+			String[] arrayOfPlayers = textAreaPlayers.getText().split(", ");
+			
+			// Collect data from each player for the specified skill
+			players = Calculations.runScraper(arrayOfPlayers, skillNumber); 
+			
+			if (players != null) {
+				Iterator<Player> play = players.iterator(); // An iterator for the list of players
+				while (play.hasNext()) {
+					Player currPlayer = play.next(); // The current player
+					
+					// If the current player is invalid (bad name), add it to the
+					// error list and remove it
+					if (!currPlayer.getValid()) {
+						playerErrors.add(currPlayer);
+						play.remove(); // Remove the invalid player
 					} else {
-						textAreaErrors.append("\"" + Calculations.playerErrors.get(i).replaceAll("\"", "") + "\"" + 
-								" ERROR! Check for name change or spelling.\n");
+						progressBar.setValue(100); // Eventually remove this
+						
+						// Add the (valid) player's experience and level data
+						textAreaExperience.append(currPlayer.getExperience() + (play.hasNext() ? "," : ""));
+						textAreaLevels.append(currPlayer.getLevel() + (play.hasNext() ? "," : ""));
+					}
+				}
+				// Handles printing the list of errors to the screen (if there are any)
+				if (playerErrors.isEmpty()) {
+					textAreaErrors.setText("None!");
+				} else {
+					// Go through the list of errors, and print out a specific response if it is known why the error
+					// could have occurred, or a generic response otherwise
+					for (int i = 0; i < playerErrors.size(); i++) {
+						if (playerErrors.get(i).getName().length() > Utility.MAX_USERNAME_LENGTH) {
+							textAreaErrors.append("\"" + playerErrors.get(i).getName() + 
+									"\"" + " ERROR! This name contains more than 12 characters.\n");
+						} else {
+							textAreaErrors.append("\"" + playerErrors.get(i).getName() + "\"" + 
+									" ERROR! Check for name change or spelling.\n");
+						}
 					}
 				}
 			}
@@ -450,7 +471,6 @@ public class SkillTrackerGui {
 	    				// If the file is valid, clear the JTextArea being used to write the data to, and
 	    				// write the data to it.
 	    				if (Utility.getFileExtension(chooser.getSelectedFile()).equals("txt")) {
-//TODO Only clear textAreas if file is successfully loaded
 	    	        		Utility.clearAll(progressBar, textAreaPlayers, textAreaExperience, textAreaLevels, 
 	    	        				textAreaErrors);
 	    	        		

@@ -7,6 +7,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 /**
  * A class used to collect data on a list of players, which is then sorted based on that data.
  * 
@@ -14,71 +16,80 @@ import java.util.List;
  *
  */
 public class Calculations {
-	// An arraylist of player objects which will later be sorted and printed
-	static List<Player> players = new ArrayList<>();
-	// Any excluded players (due to errors) will br place in here
-	public static List<String> playerErrors = new ArrayList<>();
-	// The current line of data - null before any data is read
-	private static String currentLine = null;
+	/**
+	 * Grabs the level and experience data for each player, adding it to a player
+	 * object and then adding the player object into an arraylist
+	 * 
+	 * @param list
+	 * @param skillNumber
+	 * @return
+	 */
+	public static List<Player> runScraper(String[] list, int skillNumber) {
+		List<Player> players = new ArrayList<>();
+		
+		// Go through the entire list of players
+		for (int i = 0; i < list.length; i++) {
+			try {
+				String currentLine = connect(i, list[i], skillNumber);
+					
+				// Connect to the hiscores for the current index
+				if (currentLine != "ERROR") {
+					// Break up the line into an array of rank, level, and experience respectively
+					String[] skillBrokenUp = currentLine.replaceAll(" ", "").split(",");
+					int rank = Integer.parseInt(skillBrokenUp[0]);
+					int level = Integer.parseInt(skillBrokenUp[1]);
+					long experience = Long.parseLong(skillBrokenUp[2]);
+	
+					// Create a Player object and add this object to the players arrayList.
+					Player p = new Player(list[i], rank, level, experience, true);
+					players.add(p);
+				} else {
+					// The player name is invalid, set valid variable to false
+					Player p = new Player(list[i], -1, -1, -1, false);
+					players.add(p);
+				}
+			} catch (ConnectionException e) {
+				JOptionPane.showMessageDialog(null, e.getMessage());
+				return null;
+			}
+		}
+		
+		return players;
+	}
 	
 	/**
 	 * For the given position, connect to the hiscores page for the username and
 	 * read the data
 	 * 
-	 * @param position The current index of the array
+	 * @param position
+	 * @param user
+	 * @param skillNumber
+	 * @return
+	 * @throws ConnectionException 
 	 */
-	private static boolean connect(int position, String user, int skillNumber) {
-		// Check that the username length is valid, and if it isn't, don't process it, and add it to playerErrors.
+	private static String connect(int position, String user, int skillNumber) throws ConnectionException {
+		// Check that the username length is valid.
 		if (user.length() > Utility.MAX_USERNAME_LENGTH) {
-			playerErrors.add(user);
-			return false;
+			throw new ConnectionException("Username: " + user + " is too long!");
 		}
 		// Connect to the hiscores using the username found at the position index of
 		// Utlity.playersList
 		String stringURL = "http://services.runescape.com/m=hiscore_oldschool/index_lite.ws?player=" + user;
 		try {
-			// Open a connection to StringUrl
 			URL url = new URL(stringURL);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection(); // Create a connection to the URL
+			
+			// Go through the URL content and skip to the line that contains the skill we want
 			try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
 				for (int i = 0; i < skillNumber; i++) {
 					br.readLine();
 				}
 				// Read the line of data (which contains level, rank, and experience for the selected skill)
-				currentLine = br.readLine();
+				return br.readLine();
 			}
-			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			playerErrors.add(user);
-			return false;
+			throw new ConnectionException("Something went wrong! Check Username: " + user);
 		}
 	}
-
-	/**
-	 * Grabs the level and experience data for each player, adding it to a player
-	 * object and then adding the player object into an arraylist
-	 */
-	public static List<Player> runScraper(String[] list, int skillNumber) {
-		// Clear the players and playerErrors lists so that data isn't added multiple times through consecutive runs
-		players.clear();
-		playerErrors.clear();
-		// Go through the entire list of players
-		for (int i = 0; i < list.length; i++) {
-			// Connect to the hiscores for the current index
-			if (connect(i, list[i], skillNumber)) {
-				// Break up the line into an array of rank, level, and experience respectively
-				String[] skillBrokenUp = currentLine.replaceAll(" ", "").split(",");
-				int rank = Integer.parseInt(skillBrokenUp[0]);
-				int level = Integer.parseInt(skillBrokenUp[1]);
-				long experience = Long.parseLong(skillBrokenUp[2]);
-
-				// Create a Player object and add this object to the players arrayList.
-				Player p = new Player(list[i], rank, level, experience);
-				players.add(p);
-			}
-		}
-		return players;
-	}
-
 }

@@ -56,7 +56,7 @@ public class Utility {
 	        return name.substring(name.lastIndexOf(".") + 1);
 	    } catch (Exception e) {
 	    	e.printStackTrace();
-	        return "";
+	        return "Error retrieving file extension!";
 	    }
 	}
 	

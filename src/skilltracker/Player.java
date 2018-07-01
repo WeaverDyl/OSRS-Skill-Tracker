@@ -14,6 +14,7 @@ public class Player implements Comparable<Player> {
 	private int rank; // Represents a players rank in the official hiscores
 	private int level; // Represents a players level
 	private long experience; // Represents a players experience
+	private boolean valid;
 	
 	private int i = -1; // Used as a return for the compareTo method
 
@@ -25,11 +26,12 @@ public class Player implements Comparable<Player> {
 	 * @param level The level of the player
 	 * @param experience The experience of the player
 	 */
-	public Player(String name, int rank, int level, long experience) {
+	public Player(String name, int rank, int level, long experience, boolean valid) {
 		this.name = name;
 		this.rank = rank;
 		this.level = level;
 		this.experience = experience;
+		this.valid = valid;
 	}
 
 	/**
@@ -84,6 +86,13 @@ public class Player implements Comparable<Player> {
 	 */
 	public long getExperience() {
 		return experience;
+	}
+	
+	/**
+	 * @return if the player is valid or not
+	 */
+	public boolean getValid() {
+		return valid;
 	}
 
 	/**
