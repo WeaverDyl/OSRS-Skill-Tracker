@@ -51,19 +51,19 @@ public class SkillTrackerGui {
 	private JLabel labelEnterNames = new JLabel("Enter Names:");
 	private JLabel labelExperience = new JLabel("Experience:");
 	private JLabel labelLevels = new JLabel("Levels:");
-	private JLabel labelCurrentData = new JLabel("Current Data:");
+	private JLabel labelRelativeRanking = new JLabel("Relative Rankings:");
 	private JLabel labelErrors = new JLabel("Errors:");
 	
 	private JScrollPane scrollPanePlayers = new JScrollPane();
 	private JScrollPane scrollPaneExperience = new JScrollPane();
 	private JScrollPane scrollPaneLevels = new JScrollPane();
-	private JScrollPane scrollPaneCurrentData = new JScrollPane();
+	private JScrollPane scrollPaneRelativeRanking = new JScrollPane();
 	private JScrollPane scrollPaneErrors = new JScrollPane();
 	
 	private JTextArea textAreaPlayers = new JTextArea();
 	private JTextArea textAreaExperience = new JTextArea();
 	private JTextArea textAreaLevels = new JTextArea();
-	private JTextArea textAreaCurrentData = new JTextArea();
+	private JTextArea textAreaRelativeRanking = new JTextArea();
 	private JTextArea textAreaErrors = new JTextArea();
 	
 	private JButton buttonCalculate = new JButton("Calculate");
@@ -147,9 +147,9 @@ public class SkillTrackerGui {
 		
 		// List of all the components, makes adding components to the frame easier.
 		JComponent[] listOfComponents = new JComponent[] { labelSelectSkill, labelExperience, labelLevels,
-				labelCurrentData, labelEnterNames, scrollPanePlayers, scrollPaneExperience, scrollPaneLevels, 
-				scrollPaneErrors, scrollPaneCurrentData, textAreaPlayers, textAreaExperience, textAreaLevels, 
-				textAreaCurrentData, textAreaErrors, labelErrors, buttonCalculate, buttonClearAll, buttonSave, 
+				labelRelativeRanking, labelEnterNames, scrollPanePlayers, scrollPaneExperience, scrollPaneLevels, 
+				scrollPaneErrors, scrollPaneRelativeRanking, textAreaPlayers, textAreaExperience, textAreaLevels, 
+				textAreaRelativeRanking, textAreaErrors, labelErrors, buttonCalculate, buttonClearAll, buttonSave, 
 				buttonLoad, buttonInstructions, buttonResults, separatorErrors, separatorSkills };
 		
 		// Go through each component and add it to the frame.
@@ -167,17 +167,17 @@ public class SkillTrackerGui {
 		labelEnterNames.setBounds(343, 12, 80, 14);
 		labelExperience.setBounds(343, 184, 80, 14);
 		labelLevels.setBounds(343, 356, 46, 14);
-		labelCurrentData.setBounds(343, 528, 100, 14);
-		labelErrors.setBounds(10, 245, 46, 14);
+		labelRelativeRanking.setBounds(343, 528, 115, 14);
+		labelErrors.setBounds(10, 324, 46, 14);
 		
 		scrollPanePlayers.setBounds(343, 32, 538, 141);
 		scrollPaneExperience.setBounds(343, 204, 538, 141);
 		scrollPaneLevels.setBounds(343, 376, 538, 141);
-		scrollPaneCurrentData.setBounds(343, 548, 538, 141);
-		scrollPaneErrors.setBounds(10, 266, 323, 356);
+		scrollPaneRelativeRanking.setBounds(343, 548, 538, 141);
+		scrollPaneErrors.setBounds(10, 344, 323, 205);
 		
-		separatorSkills.setBounds(10, 240, 323, 2);
-		separatorErrors.setBounds(10, 628, 323, 2);
+		separatorSkills.setBounds(10, 287, 323, 2);
+		separatorErrors.setBounds(10, 583, 323, 2);
 		
 		buttonCalculate.setBounds(10, 634, 89, 23);
 		buttonClearAll.setBounds(244, 634, 89, 23);
@@ -198,9 +198,9 @@ public class SkillTrackerGui {
 		textAreaLevels.setEditable(false);
 		scrollPaneLevels.setViewportView(textAreaLevels);
 		
-		textAreaCurrentData.setLineWrap(true);
-		textAreaCurrentData.setEditable(false);
-		scrollPaneCurrentData.setViewportView(textAreaCurrentData);
+		textAreaRelativeRanking.setLineWrap(true);
+		textAreaRelativeRanking.setEditable(false);
+		scrollPaneRelativeRanking.setViewportView(textAreaRelativeRanking);
 
 		scrollPaneErrors.setViewportView(textAreaErrors);
 		textAreaErrors.setEditable(false);
@@ -216,7 +216,7 @@ public class SkillTrackerGui {
 			public void actionPerformed(ActionEvent e) {
 				// Clear every textArea, unselect any skill, reset skillNumbers
 				Utility.clearAll(textAreaPlayers, textAreaExperience, textAreaLevels, 
-						textAreaCurrentData, textAreaErrors);
+						textAreaRelativeRanking, textAreaErrors);
 				skillButtonGroup.clearSelection();
 				skillNumber = -1;
 				verifySkillNumber = -1;
@@ -328,7 +328,7 @@ public class SkillTrackerGui {
 	 */
 	private void printResultsToScreen() {
 		List<Player> players = new ArrayList<>(); // Will contain player's skill data
-		List<Player> playersSorted = new ArrayList<>(); // Used to print current data
+		List<Player> playersSorted = new ArrayList<>(); // Used to print relative ranks
 		List<Player> playerErrors = new ArrayList<>(); // Contains any invalid player names
 		
 		// Only continue if there are names to process
@@ -343,7 +343,7 @@ public class SkillTrackerGui {
 			// with the wrong data
 			verifySkillNumber = skillNumber;
 			// Clear the results and errors so that they don't stack up upon consecutive runs
-			Utility.clearAll(textAreaExperience, textAreaLevels, textAreaCurrentData, textAreaErrors);
+			Utility.clearAll(textAreaExperience, textAreaLevels, textAreaRelativeRanking, textAreaErrors);
 			String[] arrayOfPlayers = textAreaPlayers.getText().split(", ");
 			
 			// Collect data from each player for the specified skill
@@ -388,7 +388,7 @@ public class SkillTrackerGui {
 					if (currPlayer.getValid()) {
 						int currentPlace = playerSortedIterator.nextIndex(); // The current number of players we've seen
 						String currentSkill = Utility.skills[skillNumber]; // The skill we're collecting data for
-						textAreaCurrentData.append(currentPlace + Utility.getPositionSuffix(currentPlace) + "\"" + 
+						textAreaRelativeRanking.append(currentPlace + Utility.getPositionSuffix(currentPlace) + "\"" + 
 								currPlayer.getName() + "\" " + currentSkill + " level: " + currPlayer.getLevel() + 
 								" with " + NumberFormat.getNumberInstance().format(currPlayer.getExperience()) + " xp\n"); // The message to append to the text box
 					}
@@ -468,7 +468,7 @@ public class SkillTrackerGui {
 	            fw.write(Utility.newLineGenerator(textAreaLevels.getText()));
 	            
 	            fw.write("\nPLAYER SKILL DATA:\n");
-	            fw.write(textAreaCurrentData.getText());
+	            fw.write(textAreaRelativeRanking.getText());
 	            
 	            fw.write("\nPLAYER ERROR DATA:\n");
 	            fw.write(textAreaErrors.getText());
@@ -499,7 +499,7 @@ public class SkillTrackerGui {
     				if (Utility.getFileExtension(chooser.getSelectedFile()).equals("txt")) {
     					// Clear any previous text on the application
     	        		Utility.clearAll(textAreaPlayers, textAreaExperience, textAreaLevels, 
-    	        				textAreaCurrentData, textAreaErrors);
+    	        				textAreaRelativeRanking, textAreaErrors);
 	    				// Retrieves the skillNumber from in between the set of parentheses on the first line
 	    				skillNumber = Integer.parseInt(Utility.getMatch(br.readLine(), "\\((\\d+)\\)"));
 	    				setSkillButton(skillNumber);
@@ -523,7 +523,7 @@ public class SkillTrackerGui {
     	        				// if the end of the skill data
     	        				while (!currLine.equals("")) {
         	        				currLine = br.readLine();
-    	        					textAreaCurrentData.append(currLine + "\n");	
+    	        					textAreaRelativeRanking.append(currLine + "\n");	
     	        				}
     	        			} else if (currLine.equals("PLAYER ERROR DATA:")) {
 	        					currLine = br.readLine();
@@ -578,7 +578,7 @@ public class SkillTrackerGui {
 		if (skillNumber == -1 || verifySkillNumber == -1) {
 			return false;
 		} else if (textAreaPlayers.getText().isEmpty() || textAreaExperience.getText().isEmpty() || 
-				   textAreaLevels.getText().isEmpty() || textAreaCurrentData.getText().isEmpty()) {
+				   textAreaLevels.getText().isEmpty() || textAreaRelativeRanking.getText().isEmpty()) {
 			return false;
 		}
 		return true;
