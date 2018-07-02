@@ -52,6 +52,7 @@ public class Utility {
 	public static String getFileExtension(File file) {
 	    String name = file.getName();
 	    try {
+	    	// The extension is whatever is past the last period in a filename
 	        return name.substring(name.lastIndexOf(".") + 1);
 	    } catch (Exception e) {
 	    	e.printStackTrace();
@@ -67,6 +68,7 @@ public class Utility {
 	 * @return The file with the extension, as a String
 	 */
 	public static String addExtension(String file, String extension) {
+		// If the filename doesn't end with an extension, add the new one
 		if (!file.toString().endsWith("." + extension)) {
 			file += ("." + extension);
 		}
@@ -94,11 +96,13 @@ public class Utility {
 	 * @return The string with new lines every 10 elements
 	 */
 	public static String newLineGenerator(String str) {
-		String result = "";
+		String result = ""; // Contains individual data (10 elements per line)
 		String[] individualData = str.split(",");
 		
 		for (int i = 0; i < individualData.length; i++) {
+			// Start adding pieces of data to result, adding a comma if we aren't at the end
 			result += (individualData[i] + (i == individualData.length - 1 ? "" :","));
+			// Add a new line every 10 elements
 			if ((i > 0) && (i % 10 == 0)) {
 				result += "\n";
 			}
@@ -117,10 +121,11 @@ public class Utility {
 	public static String getMatch(String str, String regex) {
 		Matcher m = Pattern.compile(regex).matcher(str);
 		while (m.find()) {
+			// Return the first substring that is matched
 			return m.group(1);
 		}
 		
-		return "";
+		return ""; // If there aren't any matches, return an empty String
 	}
 	
 	/**

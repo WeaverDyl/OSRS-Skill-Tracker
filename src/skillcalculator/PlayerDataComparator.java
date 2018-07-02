@@ -5,7 +5,7 @@ import java.util.Comparator;
 import skilltracker.Player;
 
 /**
- * Used for sorting players based on their gained experience.
+ * Used for sorting players based on their gained levels and experience.
  * 
  * @author Dylan Weaver
  *

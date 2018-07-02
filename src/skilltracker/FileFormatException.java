@@ -1,7 +1,8 @@
 package skilltracker;
 
 /**
- * 
+ * Thrown if a file doesn't have a .txt extension, which is the only
+ * supported file extension
  * @author Dylan Weaver
  *
  */

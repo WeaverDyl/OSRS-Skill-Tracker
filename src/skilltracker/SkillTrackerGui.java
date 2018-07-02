@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -131,11 +132,11 @@ public class SkillTrackerGui {
 	 * Create the application
 	 */
 	public SkillTrackerGui() {
-		initialize();
+		initialize(); // Initializes each component
 	}
 
 	/**
-	 * Initialize the contents of the frame
+	 * Initialize the contents of the frame and creates necessary action handlers
 	 */
 	private void initialize() {
 		frmClanSkillTracker.setIconImage(Toolkit.getDefaultToolkit().getImage(SkillTrackerGui.class.getResource("/media/overall.gif")));
@@ -151,9 +152,10 @@ public class SkillTrackerGui {
 				textAreaCurrentData, textAreaErrors, labelErrors, buttonCalculate, buttonClearAll, buttonSave, 
 				buttonLoad, buttonInstructions, buttonResults, separatorErrors, separatorSkills };
 		
-		// Go through each component and add it to the frame. Also sets the font settings for JLabels
+		// Go through each component and add it to the frame.
 		for (JComponent component : listOfComponents) {
 			if (component instanceof JLabel) {
+				// If the component is a label, give it a bold font
 				component.setFont(new Font("Tahoma", Font.BOLD, 12));
 			}
 			
@@ -212,8 +214,9 @@ public class SkillTrackerGui {
 		// Clear All actionListener
 		buttonClearAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// Clear every textArea, unselect any skill, reset skillNumbers
 				Utility.clearAll(textAreaPlayers, textAreaExperience, textAreaLevels, 
-						textAreaErrors);
+						textAreaCurrentData, textAreaErrors);
 				skillButtonGroup.clearSelection();
 				skillNumber = -1;
 				verifySkillNumber = -1;
@@ -223,8 +226,9 @@ public class SkillTrackerGui {
 		buttonSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					save();
+					save(); // Save if you can!
 				} catch (InvalidSaveException e) {
+					// Otherwise give the user some feedback on why saving failed
 					String errorMessage = "Can't save. Possible causes of this are:"
 							+ "\n- No skill selected\n- 'Names' textbox empty\n- Haven't calculated player data";
 					JOptionPane.showMessageDialog(frmClanSkillTracker, errorMessage,
@@ -236,7 +240,7 @@ public class SkillTrackerGui {
 		// Load actionListener
 		buttonLoad.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				load(textAreaPlayers, textAreaExperience, textAreaLevels);
+				load(); // Load the skill and name data
 			}
 		});
 		// Instructions actionListener
@@ -315,7 +319,7 @@ public class SkillTrackerGui {
 			columnThree[i].setBounds(214, 32 + (26 * i), 100, 23);
 			skillButtonGroup.add(columnThree[i]);
 			columnThree[i].addActionListener(new SkillButtonActionListener(i + columnOne.length + columnTwo.length));
-		}	
+		}
 	}
 	
 	/**
@@ -379,7 +383,7 @@ public class SkillTrackerGui {
 						String currentSkill = Utility.skills[skillNumber]; // The skill we're collecting data for
 						textAreaCurrentData.append(currentPlace + Utility.getPositionSuffix(currentPlace) + "\"" + 
 								currPlayer.getName() + "\" " + currentSkill + " level: " + currPlayer.getLevel() + 
-								" with " + currPlayer.getExperience() + " xp\n"); // The message to append to the text box
+								" with " + NumberFormat.getNumberInstance().format(currPlayer.getExperience()) + " xp\n"); // The message to append to the text box
 					}
 				}
 				// Handles printing the list of errors to the screen (if there are any)
@@ -472,7 +476,7 @@ public class SkillTrackerGui {
 	 * 			  [1] should ALWAYS be textAreaExperience
 	 * 			  [2] should ALWAYS be textAreaLevels
 	 */
-	private void load(JTextArea... box) {
+	private void load() {
 	    JFileChooser chooser = new JFileChooser();
 	    chooser.setDialogTitle("Load");
 	    int retrival = chooser.showSaveDialog(null);
@@ -497,6 +501,7 @@ public class SkillTrackerGui {
 		    	        			while ((line = br.readLine()) != null) {
 		    	        				if (!line.equals("PLAYER EXPERIENCE DATA:")) {
 		    	        					textAreaPlayers.append(line);
+	     // TODO find a way to load all of the info and better
 		    	        				} else {
 		    	        					break;
 		    	        				}
@@ -544,7 +549,8 @@ public class SkillTrackerGui {
 	public boolean safeToSave() {
 		if (skillNumber == -1 || verifySkillNumber == -1) {
 			return false;
-		} else if (textAreaPlayers.getText().isEmpty() || textAreaExperience.getText().isEmpty() || textAreaLevels.getText().isEmpty()) {
+		} else if (textAreaPlayers.getText().isEmpty() || textAreaExperience.getText().isEmpty() || 
+				   textAreaLevels.getText().isEmpty() || textAreaCurrentData.getText().isEmpty()) {
 			return false;
 		}
 		return true;

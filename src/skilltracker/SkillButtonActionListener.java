@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
  *
  */
 public class SkillButtonActionListener implements ActionListener {
-	int skillId; // The skill id that corresponds to a specific skill.
+	private int skillId; // The skill id that corresponds to a specific skill.
     
 	/**
 	 * A constructor for a SkillButtonActionListener
