@@ -30,27 +30,20 @@ public class Calculations {
 		// Go through the entire list of players
 		for (int i = 0; i < listOfPlayers.length; i++) {
 			try {
-				// Gets the correct line of data for the current player
-				String currentLine = connect(listOfPlayers[i], skillNumber);
-					
-				// Connect to the hiscores for the current index
-				if (currentLine != "ERROR") {
-					// Break up the line into an array of rank, level, and experience respectively
-					String[] skillBrokenUp = currentLine.replaceAll(" ", "").split(",");
-					int rank = Integer.parseInt(skillBrokenUp[0]);
-					int level = Integer.parseInt(skillBrokenUp[1]);
-					long experience = Long.parseLong(skillBrokenUp[2]);
-	
-					// Create a Player object and add this object to the players arrayList.
-					Player p = new Player(listOfPlayers[i], rank, level, experience, true);
-					playersData.add(p);
-				} else {
-					// The player name is invalid, set valid variable to false
-					Player p = new Player(listOfPlayers[i], -1, -1, -1, false);
-					playersData.add(p);
-				}
+			// Gets the correct line of data for the current player
+			String currentLine = connect(listOfPlayers[i], skillNumber);
+			
+				// Break up the line into an array of rank, level, and experience respectively
+				String[] skillBrokenUp = currentLine.replaceAll(" ", "").split(",");
+				int rank = Integer.parseInt(skillBrokenUp[0]);
+				int level = Integer.parseInt(skillBrokenUp[1]);
+				long experience = Long.parseLong(skillBrokenUp[2]);
+
+				// Create a Player object and add this object to the players arrayList.
+				Player p = new Player(listOfPlayers[i], rank, level, experience, true);
+				playersData.add(p);
 			} catch (ConnectionException e) {
-				// Add the invalid player to the list of players
+				// The player name is invalid, set valid variable to false
 				Player p = new Player(listOfPlayers[i], -1, -1, -1, false);
 				playersData.add(p);
 				
@@ -72,9 +65,12 @@ public class Calculations {
 	 * @throws ConnectionException when the user is not in the hiscores
 	 */
 	private static String connect(String user, int skillNumber) throws ConnectionException {
+		String validRegex = "\\d+,\\d+,\\d+"; // Three comma seperated numbers
+		
 		// Check that the username length is valid. Throw exception if not
 		if (user.length() > Utility.MAX_USERNAME_LENGTH) {
-			throw new ConnectionException("Username: " + user + " is too long!");
+			System.out.println("ERROR");
+			throw new ConnectionException("Username: \"" + user + "\" is too long!");
 		}
 		// Connect to the hiscores using the username found at the position index of Utility.playersList
 		String stringURL = "http://services.runescape.com/m=hiscore_oldschool/index_lite.ws?player=" + user;
@@ -88,11 +84,16 @@ public class Calculations {
 					br.readLine(); // Keep reading data that we don't need
 				}
 				// Read the line of data (which contains level, rank, and experience for the selected skill)
-				return br.readLine();
+				String currLine = br.readLine();
+				if (currLine.matches(validRegex)) {
+					return currLine;
+				} else {
+					throw new ConnectionException("Something went wrong! Check Username: \"" + user + "\"");
+				}
 			}
 		} catch (Exception e) {
 			// Let the user know what went wrong
-			throw new ConnectionException("Something went wrong! Check Username: " + user);
+			throw new ConnectionException("Something went wrong! Check Username: \"" + user + "\"");
 		}
 	}
 }

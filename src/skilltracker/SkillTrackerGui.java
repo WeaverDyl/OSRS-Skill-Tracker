@@ -1,5 +1,6 @@
 package skilltracker;
 
+
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -397,6 +398,12 @@ public class SkillTrackerGui {
 						}
 					}
 				}
+			}
+			if (!playerErrors.isEmpty()) {
+				// Let the user that there was an error
+				String errorMessage = "One or more errors occurred during data collection.\n"
+									+ "Please fix these errors before using the results!";
+				JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
