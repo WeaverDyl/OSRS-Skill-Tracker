@@ -482,42 +482,60 @@ public class SkillTrackerGui {
 	    int retrival = chooser.showSaveDialog(null);
 	    if (retrival == JFileChooser.APPROVE_OPTION) {
 	        try {
-	        	// Create a new FileReader wrapped in a BufferedReader that will read the selected file.
-	        	try (BufferedReader br = new BufferedReader(new FileReader(chooser.getSelectedFile()))) {
-	    			try {
-	    				// If the file is valid, clear the JTextArea being used to write the data to, and
-	    				// write the data to it.
-	    				if (Utility.getFileExtension(chooser.getSelectedFile()).equals("txt")) {
-	    	        		Utility.clearAll(textAreaPlayers, textAreaExperience, textAreaLevels, 
-	    	        				textAreaCurrentData, textAreaErrors);
-		    				// Retrieves the skillNumber from in between the set of parentheses on the first line
-		    				skillNumber = Integer.parseInt(Utility.getMatch(br.readLine(), "\\((\\d+)\\)"));
-		    				setSkillButton(skillNumber);
-	    	        		
-	    	        		String line = null;
-	    	        		while ((line = br.readLine()) != null) {
-	    	        			// Loads the username data, placing it in textAreaPlayers
-		    	        		if (line.equals("PLAYER USERNAME DATA:")) {
-		    	        			while ((line = br.readLine()) != null) {
-		    	        				if (!line.equals("PLAYER EXPERIENCE DATA:")) {
-		    	        					textAreaPlayers.append(line);
-	     // TODO find a way to load all of the info and better
-		    	        				} else {
-		    	        					break;
-		    	        				}
-		    	        			}
-		    	        		}
-	    	        		}
-	    				}
-	    				// Throw an exception if the selected file does not have a .txt extension.
-	    				else {
-	    					throw new FileFormatException("Invalid file type!\nThis program currently only supports .txt files.");
-	    				}
-	    			} catch (FileFormatException e) {
-	    				e.printStackTrace();
-	    				JOptionPane.showMessageDialog(frmClanSkillTracker, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-	    			}
-	    		}
+	        	BufferedReader br = new BufferedReader(new FileReader(chooser.getSelectedFile()));
+    			try {
+    				// If the file is valid, clear the JTextArea being used to write the data to, and
+    				// write the data to it.
+    				if (Utility.getFileExtension(chooser.getSelectedFile()).equals("txt")) {
+    					// Clear any previous text on the application
+    	        		Utility.clearAll(textAreaPlayers, textAreaExperience, textAreaLevels, 
+    	        				textAreaCurrentData, textAreaErrors);
+	    				// Retrieves the skillNumber from in between the set of parentheses on the first line
+	    				skillNumber = Integer.parseInt(Utility.getMatch(br.readLine(), "\\((\\d+)\\)"));
+	    				setSkillButton(skillNumber);
+    	        		
+    	        		String currLine = null; // The current line being read in the file
+    	        		while ((currLine = br.readLine()) != null) {
+    	        			if (currLine.equals("PLAYER USERNAME DATA:")) {
+    	        				// Read the next line, which is the data. Print that to the textArea
+    	        				currLine = br.readLine();
+	        					textAreaPlayers.append(currLine);
+    	        			} else if (currLine.equals("PLAYER EXPERIENCE DATA:")) {
+    	        				// Read the next line, which is the data. Print that to the textArea
+    	        				currLine = br.readLine();
+	        					textAreaExperience.append(currLine);
+    	        			} else if (currLine.equals("PLAYER LEVEL DATA:")) {
+    	        				// Read the next line, which is the data. Print that to the textArea
+    	        				currLine = br.readLine();
+	        					textAreaLevels.append(currLine);
+    	        			} else if (currLine.equals("PLAYER SKILL DATA:")) {
+    	        				// Read and append data until an empty line is reached. That empty line
+    	        				// if the end of the skill data
+    	        				while (!currLine.equals("")) {
+        	        				currLine = br.readLine();
+    	        					textAreaCurrentData.append(currLine + "\n");	
+    	        				}
+    	        			} else if (currLine.equals("PLAYER ERROR DATA:")) {
+	        					currLine = br.readLine();
+	        					// Read and print the errors until the end of the file is reached
+    	        				while (currLine != null) {
+    	        					textAreaErrors.append(currLine + "\n");	
+    	        					currLine = br.readLine();
+    	        				}
+    	        			}
+    	        			
+    	        		}
+    	        		br.close();
+    				}
+    				// Throw an exception if the selected file does not have a .txt extension.
+    				else {
+    					br.close();
+    					throw new FileFormatException("Invalid file type!\nThis program currently only supports .txt files.");
+    				}
+    			} catch (FileFormatException e) {
+    				e.printStackTrace();
+    				JOptionPane.showMessageDialog(frmClanSkillTracker, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    			}
 	        } catch (Exception e) {
 	            e.printStackTrace();
 				JOptionPane.showMessageDialog(frmClanSkillTracker, "Error loading file.", "Error", JOptionPane.ERROR_MESSAGE);

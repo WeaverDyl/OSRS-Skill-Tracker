@@ -69,7 +69,6 @@ public class Calculations {
 		
 		// Check that the username length is valid. Throw exception if not
 		if (user.length() > Utility.MAX_USERNAME_LENGTH) {
-			System.out.println("ERROR");
 			throw new ConnectionException("Username: \"" + user + "\" is too long!");
 		}
 		// Connect to the hiscores using the username found at the position index of Utility.playersList

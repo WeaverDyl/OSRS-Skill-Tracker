@@ -58,8 +58,6 @@ public class FinalCalculatorGUI {
 
 	private List<PlayerResult> playerDataBefore = new ArrayList<>();
 	private List<PlayerResult> playerDataAfter = new ArrayList<>();
-	
-	private List<PlayerResult> finalResults = new ArrayList<>();
 
 	/**
 	 * Launch the application.
@@ -189,8 +187,8 @@ public class FinalCalculatorGUI {
 	}
 
 	/**
-	 * 
-	 * @param data
+	 * Loads player data into arraylists to be processed
+	 * @param data Indicates if the data being loaded is initial data or final data
 	 */
 	void load(DataSelector data) {
 		List<String> playerUsernames = new ArrayList<>();
@@ -288,7 +286,7 @@ public class FinalCalculatorGUI {
 	 * Calculates the winner by comparing the data between the two files
 	 */
 	void calculateWinner() {
-		finalResults.clear(); // Clear any previous winner calculations
+		List<PlayerResult> finalResults = new ArrayList<>();
 		Utility.clearAll(textAreaExperienceWinners, textAreaLevelWinners); // Clear any previous winner calculations
 		
 		// If the two files don't contain data for the same skills, don't continue.
@@ -296,7 +294,7 @@ public class FinalCalculatorGUI {
 			JOptionPane.showMessageDialog(frmCalculateResults, "Error - The loaded files are for different skills.", 
 					"Error", JOptionPane.ERROR_MESSAGE);
 			return;
-		}else if (!playerDataBefore.isEmpty() && !playerDataAfter.isEmpty()) {
+		} else if (!playerDataBefore.isEmpty() && !playerDataAfter.isEmpty()) {
 			// Check that the lists both have data for the same number of players
 			if (playerDataBefore.size() == playerDataAfter.size()) {
 				for (int i = 0; i < playerDataBefore.size(); i++) {
@@ -321,14 +319,14 @@ public class FinalCalculatorGUI {
 		}
 		
 		// Finally, print the results
-		printExperienceWinners();
-		printLevelWinners();
+		printExperienceWinners(finalResults);
+		printLevelWinners(finalResults);
 	}
 	
 	/**
 	 * 
 	 */
-	void printExperienceWinners() {
+	void printExperienceWinners(List<PlayerResult> finalResults) {
 		Collections.sort(finalResults, new PlayerResultExperienceComparator().reversed());
 		int positionExperience = 1;
 		for (int i = 0; i < finalResults.size(); i++) {
@@ -341,7 +339,7 @@ public class FinalCalculatorGUI {
 	/**
 	 * 
 	 */
-	void printLevelWinners() {
+	void printLevelWinners(List<PlayerResult> finalResults) {
 		Collections.sort(finalResults, new PlayerResultLevelComparator().reversed());
 		int positionLevel = 1;
 		for (int i = 0; i < finalResults.size(); i++) {
