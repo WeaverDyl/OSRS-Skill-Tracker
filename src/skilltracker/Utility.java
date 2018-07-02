@@ -20,6 +20,11 @@ public class Utility {
 			"magic", "cooking", "woodcutting", "fletching", "fishing", "firemaking", "crafting", "smithing", "mining",
 			"herblore", "agility", "thieving", "slayer", "farming", "runecrafting", "hunter", "construction" };
 	
+	// Enum that lets user differentiate loading initial or final data in the final calculator gui
+	public enum DataSelector {
+		INITIAL, FINAL
+	}
+	
 	/**
 	 * Determines which suffix to use at the end of a given position (st, th, nd, rd)
 	 * 

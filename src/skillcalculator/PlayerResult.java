@@ -7,9 +7,9 @@ package skillcalculator;
  *
  */
 public class PlayerResult {
-	private String username; //
-	private long experienceGained; //
-	private int levelsGained; //
+	private String username; // Stores the username for the object
+	private long experienceGained; // Stores the final exp - initial exp
+	private int levelsGained; // Stores the final level - initial level
 	
 	/**
 	 * Creates a PlayerResult object, used to compare everybody's experience and level

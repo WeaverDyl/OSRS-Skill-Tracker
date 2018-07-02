@@ -10,6 +10,7 @@ import javax.swing.UIManager;
 
 import skilltracker.FileFormatException;
 import skilltracker.Utility;
+import skilltracker.Utility.DataSelector;
 
 import java.awt.Font;
 import javax.swing.JButton;
@@ -55,10 +56,10 @@ public class FinalCalculatorGUI {
 	JTextArea textAreaExperienceWinners = new JTextArea();
 	JTextArea textAreaLevelWinners = new JTextArea();
 
-	List<PlayerResult> playerDataBefore = new ArrayList<>();
-	List<PlayerResult> playerDataAfter = new ArrayList<>();
+	private List<PlayerResult> playerDataBefore = new ArrayList<>();
+	private List<PlayerResult> playerDataAfter = new ArrayList<>();
 	
-	List<PlayerResult> finalResults = new ArrayList<>();
+	private List<PlayerResult> finalResults = new ArrayList<>();
 
 	/**
 	 * Launch the application.
@@ -154,14 +155,16 @@ public class FinalCalculatorGUI {
 		// Action Listener for the loadBefore button
 		buttonLoadBefore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				load("before");
+				playerDataBefore.clear();
+				load(DataSelector.INITIAL);
 			}
 		});
 		
 		// Action Listener for the loadAfter button
 		buttonLoadAfter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				load("after");
+				playerDataAfter.clear();
+				load(DataSelector.FINAL);
 			}
 		});
 		
@@ -187,13 +190,12 @@ public class FinalCalculatorGUI {
 
 	/**
 	 * 
+	 * @param data
 	 */
-// TODO don't use a string as a check you dingus
-	void load(String beforeOrAfter) {
+	void load(DataSelector data) {
 		List<String> playerUsernames = new ArrayList<>();
 		List<Long> playerExperience = new ArrayList<>();
 		List<Integer> playerLevels = new ArrayList<>();
-		
 		
 		JFileChooser chooser = new JFileChooser();
 	    chooser.setDialogTitle("Load");
@@ -206,7 +208,7 @@ public class FinalCalculatorGUI {
 	    				// If the file is valid, clear the JTextArea being used to write the data to, and
 	    				// write the data to it.
 	    				if (Utility.getFileExtension(chooser.getSelectedFile()).equals("txt")) {
-	    					if (beforeOrAfter == "before") {
+	    					if (data == DataSelector.INITIAL) {
 			    				// Retrieves the skillNumber from in between the set of parentheses on the first line
 		    					String skillBefore = Utility.skills[Integer.parseInt(Utility.getMatch(br.readLine(), "\\((\\d+)\\)"))];
 		    					labelSkillNameBefore.setText(skillBefore);
@@ -256,7 +258,7 @@ public class FinalCalculatorGUI {
 	    	        		
 	    	        		if (skilltracker.Utility.areSameLength(playerUsernames.toArray(), playerExperience.toArray(), playerLevels.toArray())) {
 	    	        			for (int i = 0; i < playerUsernames.size(); i++) {
-	    	    					if (beforeOrAfter == "before") {
+	    	    					if (data == DataSelector.INITIAL) {
 	    		    	        		labelPlayerCountBefore.setText(String.valueOf(playerUsernames.size()));
 	    	    						playerDataBefore.add(new PlayerResult(playerUsernames.get(i), playerExperience.get(i), playerLevels.get(i)));
 	    	    					} else {
@@ -286,13 +288,16 @@ public class FinalCalculatorGUI {
 	 * Calculates the winner by comparing the data between the two files
 	 */
 	void calculateWinner() {
+		finalResults.clear(); // Clear any previous winner calculations
+		Utility.clearAll(textAreaExperienceWinners, textAreaLevelWinners); // Clear any previous winner calculations
+		
 		// If the two files don't contain data for the same skills, don't continue.
 		if(!labelSkillNameBefore.getText().equals(labelSkillNameAfter.getText())) {
 			JOptionPane.showMessageDialog(frmCalculateResults, "Error - The loaded files are for different skills.", 
 					"Error", JOptionPane.ERROR_MESSAGE);
 			return;
-		}
-		if (!playerDataBefore.isEmpty() && !playerDataAfter.isEmpty()) {
+		}else if (!playerDataBefore.isEmpty() && !playerDataAfter.isEmpty()) {
+			// Check that the lists both have data for the same number of players
 			if (playerDataBefore.size() == playerDataAfter.size()) {
 				for (int i = 0; i < playerDataBefore.size(); i++) {
 					// If the two files don't have the players in the same order, don't continue. 
@@ -302,10 +307,16 @@ public class FinalCalculatorGUI {
 								"Error - The loaded files have different lists of names.", "Error", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
+					// Add the experience and level gains data to the final results for each player
 					finalResults.add(new PlayerResult(playerDataBefore.get(i).getUsername(), 
 							playerDataAfter.get(i).getExperienceGained() - playerDataBefore.get(i).getExperienceGained(),
 							playerDataAfter.get(i).getLevelsGained() - playerDataBefore.get(i).getLevelsGained()));
 				}
+			} else {
+				// The two files have different numbers of players
+				JOptionPane.showMessageDialog(frmCalculateResults, "Error - The loaded files have different numbers of players.", 
+						"Error", JOptionPane.ERROR_MESSAGE);
+				return;
 			}
 		}
 		
