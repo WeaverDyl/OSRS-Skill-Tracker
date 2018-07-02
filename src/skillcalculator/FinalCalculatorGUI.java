@@ -325,6 +325,7 @@ public class FinalCalculatorGUI {
 	
 	/**
 	 * 
+	 * @param finalResults
 	 */
 	void printExperienceWinners(List<PlayerResult> finalResults) {
 		Collections.sort(finalResults, new PlayerResultExperienceComparator().reversed());
@@ -338,6 +339,7 @@ public class FinalCalculatorGUI {
 	
 	/**
 	 * 
+	 * @param finalResults
 	 */
 	void printLevelWinners(List<PlayerResult> finalResults) {
 		Collections.sort(finalResults, new PlayerResultLevelComparator().reversed());

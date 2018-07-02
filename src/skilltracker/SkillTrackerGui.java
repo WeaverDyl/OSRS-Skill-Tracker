@@ -349,13 +349,6 @@ public class SkillTrackerGui {
 			// Collect data from each player for the specified skill
 			players = Calculations.runScraper(arrayOfPlayers, skillNumber); 
 			
-			// Add elements of players into playersSorted
-			for (int i = 0; i < players.size(); i++) {
-				playersSorted.add(players.get(i));
-			}
-			// sort players based on experience and level
-			Collections.sort(playersSorted, new PlayerDataComparator().reversed());
-			
 			if (players != null) {
 				ListIterator<Player> playerIterator = players.listIterator(); // An iterator for the list of players
 				while (playerIterator.hasNext()) {
@@ -367,12 +360,26 @@ public class SkillTrackerGui {
 						playerErrors.add(currPlayer);
 						playerIterator.remove(); // Remove the invalid player
 					} else {
-						// Add the (valid) player's experience and level data
-						textAreaExperience.append(currPlayer.getExperience() + (playerIterator.hasNext() ? "," : ""));
-						textAreaLevels.append(currPlayer.getLevel() + (playerIterator.hasNext() ? "," : ""));
+						// If we're at the first element, just add the experience and level
+						if (playerIterator.nextIndex() == 1) {
+							textAreaExperience.append(Long.toString(currPlayer.getExperience()));
+							textAreaLevels.append(Integer.toString(currPlayer.getLevel()));
+						} else {
+							// Add the (valid) player's experience and level data with a comma.
+							textAreaExperience.append(", " + currPlayer.getExperience());
+							textAreaLevels.append(", " + currPlayer.getLevel());	
+						}
 					}
 				}
 				
+				// We need a sorted ranking for the relative ranking
+				for (int i = 0; i < players.size(); i++) {
+					playersSorted.add(players.get(i));
+				}
+				// Sort players based on experience and level
+				Collections.sort(playersSorted, new PlayerDataComparator().reversed());
+				
+				// Sorts and displays the relative rank of each player based on their experience and level
 				ListIterator<Player> playerSortedIterator = playersSorted.listIterator(); // An iterator for the list of players
 				while (playerSortedIterator.hasNext()) {
 					Player currPlayer = playerSortedIterator.next(); // The current player
@@ -386,6 +393,7 @@ public class SkillTrackerGui {
 								" with " + NumberFormat.getNumberInstance().format(currPlayer.getExperience()) + " xp\n"); // The message to append to the text box
 					}
 				}
+				
 				// Handles printing the list of errors to the screen (if there are any)
 				if (playerErrors.isEmpty()) {
 					textAreaErrors.setText("None!");
@@ -403,6 +411,8 @@ public class SkillTrackerGui {
 					}
 				}
 			}
+			
+			// If there were errors, let the user know
 			if (!playerErrors.isEmpty()) {
 				// Let the user that there was an error
 				String errorMessage = "One or more errors occurred during data collection.\n"
