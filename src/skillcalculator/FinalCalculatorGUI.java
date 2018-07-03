@@ -331,8 +331,8 @@ public class FinalCalculatorGUI {
 		Collections.sort(finalResults, new PlayerResultExperienceComparator().reversed());
 		int positionExperience = 1;
 		for (int i = 0; i < finalResults.size(); i++) {
-			textAreaExperienceWinners.append(positionExperience + Utility.getPositionSuffix(positionExperience)+ " " + 
-					finalResults.get(i).getUsername() + " with " + finalResults.get(i).getExperienceGained() + " experience.\n");
+			textAreaExperienceWinners.append(positionExperience + Utility.getPositionSuffix(positionExperience) +
+					"\"" + finalResults.get(i).getUsername() + "\" with " + finalResults.get(i).getExperienceGained() + " experience.\n");
 			positionExperience++;
 		}
 	}
@@ -345,8 +345,8 @@ public class FinalCalculatorGUI {
 		Collections.sort(finalResults, new PlayerResultLevelComparator().reversed());
 		int positionLevel = 1;
 		for (int i = 0; i < finalResults.size(); i++) {
-			textAreaLevelWinners.append(positionLevel + Utility.getPositionSuffix(positionLevel)+ " " + 
-					finalResults.get(i).getUsername() + " with " + finalResults.get(i).getLevelsGained() + " levels.\n");
+			textAreaLevelWinners.append(positionLevel + Utility.getPositionSuffix(positionLevel) +
+					"\"" + finalResults.get(i).getUsername() + "\" with " + finalResults.get(i).getLevelsGained() + " levels.\n");
 			positionLevel++;
 		}
 	}
