@@ -23,6 +23,6 @@ public class SkillButtonActionListener implements ActionListener {
     
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        SkillTrackerGui.skillNumber = skillId;
+        SkillTrackerGui.skillNumber = skillId; // gross what the heck
     }
 }

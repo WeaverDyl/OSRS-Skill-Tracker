@@ -174,7 +174,7 @@ public class SkillTrackerGui {
 		scrollPaneExperience.setBounds(343, 204, 538, 141);
 		scrollPaneLevels.setBounds(343, 376, 538, 141);
 		scrollPaneRelativeRanking.setBounds(343, 548, 538, 141);
-		scrollPaneErrors.setBounds(10, 344, 323, 205);
+		scrollPaneErrors.setBounds(10, 344, 323, 204);
 		
 		separatorSkills.setBounds(10, 287, 323, 2);
 		separatorErrors.setBounds(10, 583, 323, 2);

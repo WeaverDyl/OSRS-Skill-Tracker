@@ -14,6 +14,22 @@ public class PlayerDataComparator implements Comparator<Player> {
 
 	@Override
 	public int compare(Player p1, Player p2) {
-		return p1.getLevel() < p2.getLevel() ? -1 : p1.getExperience() > p2.getExperience() ? 1 : 0;
+		// Compare the player's levels
+		if (p1.getLevel() > p2.getLevel()) {
+			return 1;
+		} else if (p2.getLevel() > p1.getLevel()) {
+			return -1;
+		} else {
+			// Else their levels are the same. All that's left to check is their
+			// experience!
+			if (p1.getExperience() > p2.getExperience()) { 
+				return 1;
+			} else if (p2.getExperience() > p1.getExperience()) {
+				return -1;
+			} else {
+				// Else the players have the same level and same experience (how coincidental!)
+				return 0;
+			}
+		}
 	}
 }
