@@ -9,9 +9,6 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import skilltracker.FileFormatException;
-import skilltracker.Utility;
-import skilltracker.Utility.DataSelector;
-
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -27,6 +24,9 @@ import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import utils.Utility;
+import utils.Utility.DataSelector;
 
 public class FinalCalculatorGUI {
 
@@ -154,7 +154,7 @@ public class FinalCalculatorGUI {
 		buttonLoadBefore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				playerDataBefore.clear();
-				load(DataSelector.INITIAL);
+				load(Utility.DataSelector.INITIAL);
 			}
 		});
 		
@@ -162,7 +162,7 @@ public class FinalCalculatorGUI {
 		buttonLoadAfter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				playerDataAfter.clear();
-				load(DataSelector.FINAL);
+				load(Utility.DataSelector.FINAL);
 			}
 		});
 		
@@ -254,7 +254,7 @@ public class FinalCalculatorGUI {
 	    	        				}
 	    	        			}
 	    	        		
-	    	        		if (skilltracker.Utility.areSameLength(playerUsernames.toArray(), playerExperience.toArray(), playerLevels.toArray())) {
+	    	        		if (Utility.areSameLength(playerUsernames.toArray(), playerExperience.toArray(), playerLevels.toArray())) {
 	    	        			for (int i = 0; i < playerUsernames.size(); i++) {
 	    	    					if (data == DataSelector.INITIAL) {
 	    		    	        		labelPlayerCountBefore.setText(String.valueOf(playerUsernames.size()));
@@ -331,7 +331,7 @@ public class FinalCalculatorGUI {
 		Collections.sort(finalResults, new PlayerResultExperienceComparator().reversed());
 		int positionExperience = 1;
 		for (int i = 0; i < finalResults.size(); i++) {
-			textAreaExperienceWinners.append(positionExperience + skilltracker.Utility.getPositionSuffix(positionExperience)+ " " + 
+			textAreaExperienceWinners.append(positionExperience + Utility.getPositionSuffix(positionExperience)+ " " + 
 					finalResults.get(i).getUsername() + " with " + finalResults.get(i).getExperienceGained() + " experience.\n");
 			positionExperience++;
 		}
@@ -345,7 +345,7 @@ public class FinalCalculatorGUI {
 		Collections.sort(finalResults, new PlayerResultLevelComparator().reversed());
 		int positionLevel = 1;
 		for (int i = 0; i < finalResults.size(); i++) {
-			textAreaLevelWinners.append(positionLevel + skilltracker.Utility.getPositionSuffix(positionLevel)+ " " + 
+			textAreaLevelWinners.append(positionLevel + Utility.getPositionSuffix(positionLevel)+ " " + 
 					finalResults.get(i).getUsername() + " with " + finalResults.get(i).getLevelsGained() + " levels.\n");
 			positionLevel++;
 		}
