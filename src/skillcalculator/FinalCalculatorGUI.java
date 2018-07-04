@@ -28,6 +28,11 @@ import javax.swing.JTextArea;
 import utils.Utility;
 import utils.Utility.DataSelector;
 
+/**
+ * The GUI for the results menu
+ * 
+ * @author Dylan
+ */
 public class FinalCalculatorGUI {
 
 	private JFrame frmCalculateResults;
@@ -56,8 +61,8 @@ public class FinalCalculatorGUI {
 	JTextArea textAreaExperienceWinners = new JTextArea();
 	JTextArea textAreaLevelWinners = new JTextArea();
 
-	private List<PlayerResult> playerDataBefore = new ArrayList<>();
-	private List<PlayerResult> playerDataAfter = new ArrayList<>();
+	private List<PlayerResult> playerDataBefore = new ArrayList<>(); // Stores data from the initial file
+	private List<PlayerResult> playerDataAfter = new ArrayList<>(); // Stores data from the final file
 
 	/**
 	 * Launch the application.
@@ -190,10 +195,13 @@ public class FinalCalculatorGUI {
 	 * Loads player data into arraylists to be processed
 	 * @param data Indicates if the data being loaded is initial data or final data
 	 */
-	void load(DataSelector data) {
+	private void load(DataSelector data) {
 		List<String> playerUsernames = new ArrayList<>();
 		List<Long> playerExperience = new ArrayList<>();
 		List<Integer> playerLevels = new ArrayList<>();
+		
+		String initialSkill = null;
+		String finalSkill = null;
 		
 		JFileChooser chooser = new JFileChooser();
 	    chooser.setDialogTitle("Load");
@@ -206,19 +214,17 @@ public class FinalCalculatorGUI {
 	    				// If the file is valid, clear the JTextArea being used to write the data to, and
 	    				// write the data to it.
 	    				if (Utility.getFileExtension(chooser.getSelectedFile()).equals("txt")) {
+	    					// Set the initial skill
 	    					if (data == DataSelector.INITIAL) {
-			    				// Retrieves the skillNumber from in between the set of parentheses on the first line
-		    					String skillBefore = Utility.skills[Integer.parseInt(Utility.getMatch(br.readLine(), "\\((\\d+)\\)"))];
-		    					labelSkillNameBefore.setText(skillBefore);
+	    						initialSkill = br.readLine();
 	    					} else {
-			    				// Retrieves the skillNumber from in between the set of parentheses on the first line
-		    					String skillAfter = Utility.skills[Integer.parseInt(Utility.getMatch(br.readLine(), "\\((\\d+)\\)"))];
-		    					labelSkillNameAfter.setText(skillAfter);
+	    						// Set the final skill
+	    						finalSkill = br.readLine();
 	    					}
 	    	        		
 	    	        		String line = null;
 	    	        		while ((line = br.readLine()) != null) {
-	    	        			// Loads the username data, placing it in textAreaPlayers
+	    	        			// Loads the username data into playerUsernames
 		    	        		if (line.equals("PLAYER USERNAME DATA:")) {
 		    	        			while ((line = br.readLine()) != null) {
 		    	        				if (!line.equals("PLAYER EXPERIENCE DATA:")) {
@@ -228,6 +234,8 @@ public class FinalCalculatorGUI {
 		    	        				}
 		    	        			}
 		    	        		}
+		    	        		
+	    	        			// Loads the experience data into playerExperience
 		    	        		if (line.equals("PLAYER EXPERIENCE DATA:")) {
     	        					while ((line = br.readLine()) != null) {
 		    	        				if (!line.equals("PLAYER LEVEL DATA:") && !line.equals("")) {
@@ -240,6 +248,8 @@ public class FinalCalculatorGUI {
 		    	        				}
     	        					}
 		    	        		}
+		    	        		
+	    	        			// Loads the level data into playerLevels
 		    	        		if (line.equals("PLAYER LEVEL DATA:")) {
 	    	        					while ((line = br.readLine()) != null) {
 			    	        				if (!line.equals("PLAYER SKILL DATA:") && !line.equals("")) {
@@ -253,24 +263,37 @@ public class FinalCalculatorGUI {
 	    	        					}
 	    	        				}
 	    	        			}
-	    	        		
+	    	        		// Ensure the file has equal numbers of players, experience, and levels. Otherwise, we can't load properly
 	    	        		if (Utility.areSameLength(playerUsernames.toArray(), playerExperience.toArray(), playerLevels.toArray())) {
 	    	        			for (int i = 0; i < playerUsernames.size(); i++) {
+	    	        				// Set the correct labels for initial data versus final data
 	    	    					if (data == DataSelector.INITIAL) {
+	    	    						// Get the initial skill from the utility array and set the text to match
+	    		    					String skillBefore = Utility.skills[Integer.parseInt(Utility.getMatch(initialSkill, "\\((\\d+)\\)"))];
+	    		    					labelSkillNameBefore.setText(skillBefore);
+	    	    						
+	    		    					// Set the initial player count
 	    		    	        		labelPlayerCountBefore.setText(String.valueOf(playerUsernames.size()));
 	    	    						playerDataBefore.add(new PlayerResult(playerUsernames.get(i), playerExperience.get(i), playerLevels.get(i)));
 	    	    					} else {
+	    	    						// Get the final skill from the utility array and set the text to match
+	    		    					String skillAfter = Utility.skills[Integer.parseInt(Utility.getMatch(finalSkill, "\\((\\d+)\\)"))];
+	    		    					labelSkillNameAfter.setText(skillAfter);
+	    		    					
+	    		    					// Set the final player count
 	    		    	        		labelPlayerCountAfter.setText(String.valueOf(playerUsernames.size()));
 	    	    						playerDataAfter.add(new PlayerResult(playerUsernames.get(i), playerExperience.get(i), playerLevels.get(i)));
 	    	    					}
 	    	        			}
+	    	        		} else {
+	    	        			throw new LoadException("There is an issue loading this file!\nMake sure there are no errors with any players within the file!");
 	    	        		}
 	    				}
 	    				// Throw an exception if the selected file does not have a .txt extension.
 	    				else {
 	    					throw new FileFormatException("Invalid file type!\nThis program currently only supports .txt files.");
 	    				}
-	    			} catch (FileFormatException e) {
+	    			} catch (Exception e) {
 	    				e.printStackTrace();
 	    				JOptionPane.showMessageDialog(frmCalculateResults, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 	    			}
@@ -285,7 +308,7 @@ public class FinalCalculatorGUI {
 	/**
 	 * Calculates the winner by comparing the data between the two files
 	 */
-	void calculateWinner() {
+	private void calculateWinner() {
 		List<PlayerResult> finalResults = new ArrayList<>();
 		Utility.clearAll(textAreaExperienceWinners, textAreaLevelWinners); // Clear any previous winner calculations
 		
@@ -324,12 +347,14 @@ public class FinalCalculatorGUI {
 	}
 	
 	/**
-	 * 
-	 * @param finalResults
+	 * Prints an ordered list of all player's experience gains
+	 * @param finalResults The unordered list of results
 	 */
-	void printExperienceWinners(List<PlayerResult> finalResults) {
+	private void printExperienceWinners(List<PlayerResult> finalResults) {
+		// Sort the players based on their experience gains (in descending order)
 		Collections.sort(finalResults, new PlayerResultExperienceComparator().reversed());
-		int positionExperience = 1;
+		int positionExperience = 1; // Keeps track of current rank
+		// Append the text to the experience textArea
 		for (int i = 0; i < finalResults.size(); i++) {
 			textAreaExperienceWinners.append(positionExperience + Utility.getPositionSuffix(positionExperience) +
 					"\"" + finalResults.get(i).getUsername() + "\" with " + finalResults.get(i).getExperienceGained() + " experience.\n");
@@ -338,12 +363,14 @@ public class FinalCalculatorGUI {
 	}
 	
 	/**
-	 * 
-	 * @param finalResults
+	 * Prints an ordered list of all player's level gains
+	 * @param finalResults The unordered list of results
 	 */
-	void printLevelWinners(List<PlayerResult> finalResults) {
+	private void printLevelWinners(List<PlayerResult> finalResults) {
+		// Sort the players based on their level gains (in descending order)
 		Collections.sort(finalResults, new PlayerResultLevelComparator().reversed());
-		int positionLevel = 1;
+		int positionLevel = 1; // Keeps track of current rank
+		// Append the text to the level textArea
 		for (int i = 0; i < finalResults.size(); i++) {
 			textAreaLevelWinners.append(positionLevel + Utility.getPositionSuffix(positionLevel) +
 					"\"" + finalResults.get(i).getUsername() + "\" with " + finalResults.get(i).getLevelsGained() + " levels.\n");

@@ -20,8 +20,7 @@ public class PlayerDataComparator implements Comparator<Player> {
 		} else if (p2.getLevel() > p1.getLevel()) {
 			return -1;
 		} else {
-			// Else their levels are the same. All that's left to check is their
-			// experience!
+			// Else their levels are the same. All that's left to check is their experience!
 			if (p1.getExperience() > p2.getExperience()) { 
 				return 1;
 			} else if (p2.getExperience() > p1.getExperience()) {

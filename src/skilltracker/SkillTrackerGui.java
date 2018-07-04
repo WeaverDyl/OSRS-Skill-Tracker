@@ -141,6 +141,7 @@ public class SkillTrackerGui {
 	 * Initialize the contents of the frame and creates necessary action handlers
 	 */
 	private void initialize() {
+		frmClanSkillTracker.setTitle("Clan Toolkit");
 		frmClanSkillTracker.setIconImage(Toolkit.getDefaultToolkit().getImage(SkillTrackerGui.class.getResource("/media/overall.gif")));
 		frmClanSkillTracker.setResizable(false);
 		frmClanSkillTracker.setBounds(100, 100, 901, 733);
@@ -213,6 +214,7 @@ public class SkillTrackerGui {
 				printResultsToScreen();
 			}
 		});
+		
 		// Clear All actionListener
 		buttonClearAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -224,6 +226,7 @@ public class SkillTrackerGui {
 				verifySkillNumber = -1;
 			}
 		});
+		
 		// Save actionListener
 		buttonSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -239,12 +242,14 @@ public class SkillTrackerGui {
 				}
 			}
 		});
+		
 		// Load actionListener
 		buttonLoad.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				load(); // Load the skill and name data
 			}
 		});
+		
 		// Instructions actionListener
 		buttonInstructions.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -259,6 +264,7 @@ public class SkillTrackerGui {
 		    			"Instructions", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
+		
 		// Calculate Results actionListener
 		buttonResults.addActionListener(new ActionListener() {
 			boolean alreadyOpen = false; // Only allow one results menu to be opened at once
@@ -289,7 +295,8 @@ public class SkillTrackerGui {
 	/**
 	 * Handles the skill buttons, their buttongroup and actionListeners
 	 */
-	public void initializeSkillButtons() {
+	private void initializeSkillButtons() {
+		// The buttons are added one column at a time
 		JRadioButton[] columnOne = new JRadioButton[] { rdButtonTotal, rdButtonAttack, rdButtonDefence, rdButtonStrength,
 				rdButtonHitpoints, rdButtonRanged, rdButtonPrayer, rdButtonMagic };
 		
@@ -356,8 +363,7 @@ public class SkillTrackerGui {
 				while (playerIterator.hasNext()) {
 					Player currPlayer = playerIterator.next(); // The current player
 					
-					// If the current player is invalid (bad name), add it to the
-					// error list and remove it
+					// If the current player is invalid (bad name), add it to the error list and remove it
 					if (!currPlayer.getValid()) {
 						playerErrors.add(currPlayer);
 						playerIterator.remove(); // Remove the invalid player
@@ -427,10 +433,11 @@ public class SkillTrackerGui {
 	/**
 	 * Saves the selected skill, list of players, list of experience, list of levels, and list of errors
 	 * in a .txt file.
-	 * @throws InvalidSaveException 
 	 * 
+	 * @throws InvalidSaveException when it's not safe to save the data to a file
 	 */
 	private void save() throws InvalidSaveException {
+		// If it's not safe to save (text boxes empty, skill not selected, etc), throw an exception
     	if (!safeToSave()) {
     		throw new InvalidSaveException("Can't save.");
     	}
@@ -561,7 +568,7 @@ public class SkillTrackerGui {
 	 * 
 	 * @param skillNumber The number corresponding to the skill (found in save files)
 	 */
-	public void setSkillButton(int skillNumber) {
+	private void setSkillButton(int skillNumber) {
 		JRadioButton[] skillButton = { rdButtonTotal, rdButtonAttack, rdButtonDefence, rdButtonStrength,
 				rdButtonHitpoints, rdButtonRanged, rdButtonPrayer, rdButtonMagic, rdButtonCooking, 
 				rdButtonWoodcutting, rdButtonFletching, rdButtonFishing, rdButtonFiremaking, rdButtonCrafting, 
@@ -576,7 +583,7 @@ public class SkillTrackerGui {
 	 * 
 	 * @return true if the settings are such that it is valid to save the file, else false
 	 */
-	public boolean safeToSave() {
+	private boolean safeToSave() {
 		if (skillNumber == -1 || verifySkillNumber == -1) {
 			return false;
 		} else if (textAreaPlayers.getText().isEmpty() || textAreaExperience.getText().isEmpty() || 

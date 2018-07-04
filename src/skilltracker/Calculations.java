@@ -27,13 +27,13 @@ public class Calculations {
 	 * @return An arraylist of each players skill data, or null if an exception occurred
 	 */
 	public static List<Player> runScraper(String[] listOfPlayers, int skillNumber) {
-		List<Player> playersData = new ArrayList<>();
+		List<Player> playersData = new ArrayList<>(); // Stores username, rank, level, experience data
 		
-		// Go through the entire list of players
+		// Go through and store data in playersData for each player
 		for (int i = 0; i < listOfPlayers.length; i++) {
 			try {
-			// Gets the correct line of data for the current player
-			String currentLine = connect(listOfPlayers[i], skillNumber);
+				// Gets the correct line of data for the current player
+				String currentLine = connect(listOfPlayers[i], skillNumber);
 			
 				// Break up the line into an array of rank, level, and experience respectively
 				String[] skillBrokenUp = currentLine.replaceAll(" ", "").split(",");

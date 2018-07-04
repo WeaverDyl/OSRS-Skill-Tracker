@@ -1,7 +1,5 @@
 package skilltracker;
 
-import java.text.NumberFormat;
-
 /**
  * A class to represent a player. A player has a username, an experience, and a
  * level
@@ -20,7 +18,7 @@ public class Player implements Comparable<Player> {
 	 * A constructor representing a player
 	 * 
 	 * @param name The username of the player
-	 * @param rank The official rank of the player
+	 * @param rank The rank of the player
 	 * @param level The level of the player
 	 * @param experience The experience of the player
 	 */
@@ -93,14 +91,6 @@ public class Player implements Comparable<Player> {
 	 */
 	public boolean getValid() {
 		return valid;
-	}
-
-	/**
-	 * @return .
-	 */
-	public String toString() {
-		return "\"" + name.replaceAll(" ", "_") + "\"" + " total level: " + level + " with "
-				+ NumberFormat.getInstance().format(experience) + " xp";
 	}
 	
 	@Override
