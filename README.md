@@ -16,6 +16,7 @@ The skill event system is used when a clan hosts a skilling event where the goal
 I think that's a giant hassle, which is the main point of this software: making skilling events easier to host. With this program, simply enter/load a list of player names, select the skill you're having an event for, and click calculate. Save this data in a file using the `Save Data` button. That is your initial data.
 
 At the end of the event, do the same thing. Save the file just as before after calculating. Then, click the `Results` button. You'll see this window pop up:
+
 ![image](https://i.imgur.com/r79i6ME.png)
 
 Load the initial and final data files that you previously saved using the corresponding `Load Data` buttons, and click `Calculate Winners`. Automatically, the program will rank each player in descending order by the amount of experience they gained, and separately by how many levels they gained. It's important to note that the initial and final data must be for the same skill, and must contain the same players.
