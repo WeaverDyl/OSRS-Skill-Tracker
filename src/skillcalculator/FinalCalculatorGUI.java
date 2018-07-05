@@ -101,7 +101,7 @@ public class FinalCalculatorGUI {
 		frmCalculateResults.setIconImage(Toolkit.getDefaultToolkit().getImage(FinalCalculatorGUI.class.getResource("/media/overall.gif")));
 		frmCalculateResults.setTitle("Calculate Results");
 		frmCalculateResults.setResizable(false);
-		frmCalculateResults.setBounds(100, 100, 425, 416);
+		frmCalculateResults.setBounds(100, 100, 436, 424);
 		frmCalculateResults.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmCalculateResults.getContentPane().setLayout(null);
 		

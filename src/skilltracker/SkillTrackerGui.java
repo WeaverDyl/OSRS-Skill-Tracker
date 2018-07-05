@@ -144,7 +144,7 @@ public class SkillTrackerGui {
 		frmClanSkillTracker.setTitle("Clan Toolkit");
 		frmClanSkillTracker.setIconImage(Toolkit.getDefaultToolkit().getImage(SkillTrackerGui.class.getResource("/media/overall.gif")));
 		frmClanSkillTracker.setResizable(false);
-		frmClanSkillTracker.setBounds(100, 100, 901, 733);
+		frmClanSkillTracker.setBounds(100, 100, 907, 739);
 		frmClanSkillTracker.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmClanSkillTracker.getContentPane().setLayout(null);
 		
@@ -177,31 +177,35 @@ public class SkillTrackerGui {
 		scrollPaneExperience.setBounds(343, 204, 538, 141);
 		scrollPaneLevels.setBounds(343, 376, 538, 141);
 		scrollPaneRelativeRanking.setBounds(343, 548, 538, 141);
-		scrollPaneErrors.setBounds(10, 344, 323, 204);
+		scrollPaneErrors.setBounds(10, 344, 323, 205);
 		
 		separatorSkills.setBounds(10, 287, 323, 2);
 		separatorErrors.setBounds(10, 583, 323, 2);
 		
-		buttonCalculate.setBounds(10, 634, 89, 23);
-		buttonClearAll.setBounds(244, 634, 89, 23);
-		buttonSave.setBounds(127, 634, 89, 23);
-		buttonLoad.setBounds(127, 668, 89, 23);
-		buttonInstructions.setBounds(244, 668, 89, 23);
-		buttonResults.setBounds(10, 668, 89, 23);
+		buttonCalculate.setBounds(10, 633, 89, 23);
+		buttonClearAll.setBounds(244, 633, 89, 23);
+		buttonSave.setBounds(127, 633, 89, 23);
+		buttonLoad.setBounds(127, 667, 89, 23);
+		buttonInstructions.setBounds(244, 667, 89, 23);
+		buttonResults.setBounds(10, 667, 89, 23);
 
 		// Handles settings for the textAreas and scrollPanes
 		textAreaPlayers.setLineWrap(true);
+		textAreaPlayers.setWrapStyleWord(true);
 		scrollPanePlayers.setViewportView(textAreaPlayers);
 		
 		textAreaExperience.setLineWrap(true);
+		textAreaExperience.setWrapStyleWord(true);
 		textAreaExperience.setEditable(false);
 		scrollPaneExperience.setViewportView(textAreaExperience);
 
 		textAreaLevels.setLineWrap(true);
+		textAreaLevels.setWrapStyleWord(true);
 		textAreaLevels.setEditable(false);
 		scrollPaneLevels.setViewportView(textAreaLevels);
 		
 		textAreaRelativeRanking.setLineWrap(true);
+		textAreaRelativeRanking.setWrapStyleWord(true);
 		textAreaRelativeRanking.setEditable(false);
 		scrollPaneRelativeRanking.setViewportView(textAreaRelativeRanking);
 
@@ -353,7 +357,7 @@ public class SkillTrackerGui {
 			verifySkillNumber = skillNumber;
 			// Clear the results and errors so that they don't stack up upon consecutive runs
 			Utility.clearAll(textAreaExperience, textAreaLevels, textAreaRelativeRanking, textAreaErrors);
-			String[] arrayOfPlayers = textAreaPlayers.getText().split(", ");
+			String[] arrayOfPlayers = textAreaPlayers.getText().trim().replaceAll(",", ", ").split(", ");
 			
 			// Collect data from each player for the specified skill
 			players = Calculations.runScraper(arrayOfPlayers, skillNumber); 
@@ -397,7 +401,7 @@ public class SkillTrackerGui {
 						int currentPlace = playerSortedIterator.nextIndex(); // The current number of players we've seen
 						String currentSkill = Utility.skills[skillNumber]; // The skill we're collecting data for
 						textAreaRelativeRanking.append(currentPlace + Utility.getPositionSuffix(currentPlace) + "\"" + 
-								currPlayer.getName() + "\" " + currentSkill + " level: " + currPlayer.getLevel() + 
+								currPlayer.getName().trim()+ "\" " + currentSkill + " level: " + currPlayer.getLevel() + 
 								" with " + NumberFormat.getNumberInstance().format(currPlayer.getExperience()) + " xp\n"); // The message to append to the text box
 					}
 				}
@@ -410,10 +414,10 @@ public class SkillTrackerGui {
 					// could have occurred, or a generic response otherwise
 					for (int i = 0; i < playerErrors.size(); i++) {
 						if (playerErrors.get(i).getName().length() > Utility.MAX_USERNAME_LENGTH) {
-							textAreaErrors.append("\"" + playerErrors.get(i).getName() + 
+							textAreaErrors.append("\"" + playerErrors.get(i).getName().trim() + 
 									"\"" + " ERROR! This name contains more than 12 characters.\n");
 						} else {
-							textAreaErrors.append("\"" + playerErrors.get(i).getName() + "\"" + 
+							textAreaErrors.append("\"" + playerErrors.get(i).getName().trim() + "\"" + 
 									" ERROR! Check for name change or spelling.\n");
 						}
 					}
@@ -515,26 +519,45 @@ public class SkillTrackerGui {
     	        		
     	        		String currLine = null; // The current line being read in the file
     	        		while ((currLine = br.readLine()) != null) {
+    	        			// Read in the username data
     	        			if (currLine.equals("PLAYER USERNAME DATA:")) {
+    	        				currLine = br.readLine();
+    	        				// Read data until we reach the next section
+    	        				while (!currLine.equals("PLAYER EXPERIENCE DATA:")) {
+    	        					textAreaPlayers.append(currLine.trim());
+    	        					currLine = br.readLine();
+    	        				}
+    	        			} 
+    	        			// Read in the experience data
+    	        			if (currLine.equals("PLAYER EXPERIENCE DATA:")) {
     	        				// Read the next line, which is the data. Print that to the textArea
     	        				currLine = br.readLine();
-	        					textAreaPlayers.append(currLine);
-    	        			} else if (currLine.equals("PLAYER EXPERIENCE DATA:")) {
-    	        				// Read the next line, which is the data. Print that to the textArea
+    	        				// Read data until we reach the next section
+    	        				while (!currLine.equals("PLAYER LEVEL DATA:")) {
+    	        					textAreaExperience.append(currLine);
+    	        					currLine = br.readLine();
+    	        				}
+    	        			}
+    	        			// Read in the level data
+    	        			if (currLine.equals("PLAYER LEVEL DATA:")) {
     	        				currLine = br.readLine();
-	        					textAreaExperience.append(currLine);
-    	        			} else if (currLine.equals("PLAYER LEVEL DATA:")) {
-    	        				// Read the next line, which is the data. Print that to the textArea
-    	        				currLine = br.readLine();
-	        					textAreaLevels.append(currLine);
-    	        			} else if (currLine.equals("PLAYER SKILL DATA:")) {
+    	        				// Read data until we reach the next section
+    	        				while (!currLine.equals("PLAYER SKILL DATA:")) {
+    	        					textAreaLevels.append(currLine);
+    	        					currLine = br.readLine();
+    	        				}
+    	        			}
+    	        			// Read in the relative rank data
+    	        			if (currLine.equals("PLAYER SKILL DATA:")) {
     	        				// Read and append data until an empty line is reached. That empty line
     	        				// if the end of the skill data
     	        				while (!currLine.equals("")) {
         	        				currLine = br.readLine();
     	        					textAreaRelativeRanking.append(currLine + "\n");	
     	        				}
-    	        			} else if (currLine.equals("PLAYER ERROR DATA:")) {
+    	        			}
+    	        			// Read in the error data
+    	        			if (currLine.equals("PLAYER ERROR DATA:")) {
 	        					currLine = br.readLine();
 	        					// Read and print the errors until the end of the file is reached
     	        				while (currLine != null) {

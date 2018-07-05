@@ -106,7 +106,7 @@ public class Utility {
 		
 		for (int i = 0; i < individualData.length; i++) {
 			// Start adding pieces of data to result, adding a comma if we aren't at the end
-			result += (individualData[i] + (i == individualData.length - 1 ? "" :","));
+			result += (individualData[i].trim() + (i == individualData.length - 1 ? "" :", "));
 			// Add a new line every 10 elements
 			if ((i > 0) && (i % 10 == 0)) {
 				result += "\n";

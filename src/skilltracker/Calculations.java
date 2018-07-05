@@ -33,7 +33,7 @@ public class Calculations {
 		for (int i = 0; i < listOfPlayers.length; i++) {
 			try {
 				// Gets the correct line of data for the current player
-				String currentLine = connect(listOfPlayers[i], skillNumber);
+				String currentLine = connect(listOfPlayers[i].trim(), skillNumber);
 			
 				// Break up the line into an array of rank, level, and experience respectively
 				String[] skillBrokenUp = currentLine.replaceAll(" ", "").split(",");
