@@ -47,7 +47,7 @@ import utils.Utility;
  */
 public class SkillTrackerGui {
 
-	private JFrame frmClanSkillTracker = new JFrame("Clan Skill Tracker");
+	private JFrame frmClanSkillTracker = new JFrame("Clan Toolkit");
 	
 	private JLabel labelSelectSkill = new JLabel("Select Skill:");
 	private JLabel labelEnterNames = new JLabel("Enter Names:");
@@ -141,7 +141,6 @@ public class SkillTrackerGui {
 	 * Initialize the contents of the frame and creates necessary action handlers
 	 */
 	private void initialize() {
-		frmClanSkillTracker.setTitle("Clan Toolkit");
 		frmClanSkillTracker.setIconImage(Toolkit.getDefaultToolkit().getImage(SkillTrackerGui.class.getResource("/media/overall.gif")));
 		frmClanSkillTracker.setResizable(false);
 		frmClanSkillTracker.setBounds(100, 100, 907, 739);
@@ -237,10 +236,11 @@ public class SkillTrackerGui {
 				try {
 					save(); // Save if you can!
 				} catch (InvalidSaveException e) {
+					Toolkit.getDefaultToolkit().beep();
 					// Otherwise give the user some feedback on why saving failed
 					String errorMessage = "Can't save. Possible causes of this are:"
 							+ "\n- No skill selected\n- 'Names' textbox empty\n- Haven't calculated player data";
-					JOptionPane.showMessageDialog(frmClanSkillTracker, errorMessage,
+					JOptionPane.showMessageDialog(null, errorMessage,
 			    			"Error", JOptionPane.ERROR_MESSAGE);
 					e.printStackTrace();
 				}
@@ -286,7 +286,8 @@ public class SkillTrackerGui {
 						  }
 						});
 				} else {
-					JOptionPane.showMessageDialog(frmClanSkillTracker, "You already have a result menu open.", 
+					Toolkit.getDefaultToolkit().beep();
+					JOptionPane.showMessageDialog(null, "You already have a result menu open.", 
 			    			"Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -348,7 +349,8 @@ public class SkillTrackerGui {
 		if(!textAreaPlayers.getText().isEmpty()) {
 			// Check that a skill is even selected before doing any processing
 			if (skillNumber == -1) {
-				JOptionPane.showMessageDialog(frmClanSkillTracker, "You haven't selected a skill!", 
+				Toolkit.getDefaultToolkit().beep();
+				JOptionPane.showMessageDialog(null, "You haven't selected a skill!", 
 						"Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -426,6 +428,7 @@ public class SkillTrackerGui {
 			
 			// If there were errors, let the user know
 			if (!playerErrors.isEmpty()) {
+				Toolkit.getDefaultToolkit().beep();
 				// Let the user that there was an error
 				String errorMessage = "One or more errors occurred during data collection.\n"
 									+ "Please fix these errors before using the results!";
@@ -487,7 +490,8 @@ public class SkillTrackerGui {
 	            fw.write(textAreaErrors.getText());
 	        } catch (Exception e) {
 	            e.printStackTrace();
-				JOptionPane.showMessageDialog(frmClanSkillTracker, "Error saving file.", "Error", JOptionPane.ERROR_MESSAGE);
+	            Toolkit.getDefaultToolkit().beep();
+				JOptionPane.showMessageDialog(null, "Error saving file.", "Error", JOptionPane.ERROR_MESSAGE);
 	        }
 	    }
 	}
@@ -576,11 +580,13 @@ public class SkillTrackerGui {
     				}
     			} catch (FileFormatException e) {
     				e.printStackTrace();
-    				JOptionPane.showMessageDialog(frmClanSkillTracker, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    				Toolkit.getDefaultToolkit().beep();
+    				JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     			}
 	        } catch (Exception e) {
 	            e.printStackTrace();
-				JOptionPane.showMessageDialog(frmClanSkillTracker, "Error loading file.", "Error", JOptionPane.ERROR_MESSAGE);
+	            Toolkit.getDefaultToolkit().beep();
+				JOptionPane.showMessageDialog(null, "Error loading file.", "Error", JOptionPane.ERROR_MESSAGE);
 	        }
 	    }
 	}

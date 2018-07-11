@@ -35,7 +35,7 @@ import utils.Utility.DataSelector;
  */
 public class FinalCalculatorGUI {
 
-	private JFrame frmCalculateResults;
+	private JFrame frmCalculateResults = new JFrame("Calculate Results");
 	
 	JLabel labelBeforeData = new JLabel("Before Data:");
 	JLabel labelAfterData = new JLabel("After Data:");
@@ -97,9 +97,7 @@ public class FinalCalculatorGUI {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frmCalculateResults = new JFrame();
 		frmCalculateResults.setIconImage(Toolkit.getDefaultToolkit().getImage(FinalCalculatorGUI.class.getResource("/media/overall.gif")));
-		frmCalculateResults.setTitle("Calculate Results");
 		frmCalculateResults.setResizable(false);
 		frmCalculateResults.setBounds(100, 100, 436, 424);
 		frmCalculateResults.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -295,12 +293,12 @@ public class FinalCalculatorGUI {
 	    				}
 	    			} catch (Exception e) {
 	    				e.printStackTrace();
-	    				JOptionPane.showMessageDialog(frmCalculateResults, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	    				JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 	    			}
 	    		}
 	        } catch (Exception e) {
 	            e.printStackTrace();
-				JOptionPane.showMessageDialog(frmCalculateResults, "Error loading file.", "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Error loading file.", "Error", JOptionPane.ERROR_MESSAGE);
 	        }
 	    }
 	}
@@ -314,7 +312,7 @@ public class FinalCalculatorGUI {
 		
 		// If the two files don't contain data for the same skills, don't continue.
 		if(!labelSkillNameBefore.getText().equals(labelSkillNameAfter.getText())) {
-			JOptionPane.showMessageDialog(frmCalculateResults, "Error - The loaded files are for different skills.", 
+			JOptionPane.showMessageDialog(null, "Error - The loaded files are for different skills.", 
 					"Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		} else if (!playerDataBefore.isEmpty() && !playerDataAfter.isEmpty()) {
@@ -324,7 +322,7 @@ public class FinalCalculatorGUI {
 					// If the two files don't have the players in the same order, don't continue. 
 					// This could lead to inaccurate results.
 					if(!playerDataBefore.get(i).getUsername().equals(playerDataAfter.get(i).getUsername())) {
-						JOptionPane.showMessageDialog(frmCalculateResults, 
+						JOptionPane.showMessageDialog(null, 
 								"Error - The loaded files have different lists of names.", "Error", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
@@ -335,7 +333,7 @@ public class FinalCalculatorGUI {
 				}
 			} else {
 				// The two files have different numbers of players
-				JOptionPane.showMessageDialog(frmCalculateResults, "Error - The loaded files have different numbers of players.", 
+				JOptionPane.showMessageDialog(null, "Error - The loaded files have different numbers of players.", 
 						"Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
