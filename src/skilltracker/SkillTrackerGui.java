@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.ListIterator;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -365,24 +364,22 @@ public class SkillTrackerGui {
 			players = Calculations.runScraper(arrayOfPlayers, skillNumber); 
 			
 			if (players != null) {
-				ListIterator<Player> playerIterator = players.listIterator(); // An iterator for the list of players
-				while (playerIterator.hasNext()) {
-					Player currPlayer = playerIterator.next(); // The current player
+				// Go through the list of players and display the experience and level data
+				for (int currIndex = 0; currIndex < players.size(); currIndex++) {
+					Player currPlayer = players.get(currIndex); // The current player
 					
-					// If the current player is invalid (bad name), add it to the error list and remove it
+					// Add invalid players to the error list
 					if (!currPlayer.getValid()) {
-						playerErrors.add(currPlayer);
-						playerIterator.remove(); // Remove the invalid player
+						playerErrors.add(currPlayer); // Handle invalid players
+					}
+					// Don't print a comma before the first entry (formatting)
+					if (currIndex == 0) {
+						textAreaExperience.append(Long.toString(currPlayer.getExperience()));
+						textAreaLevels.append(Integer.toString(currPlayer.getLevel()));
 					} else {
-						// If we're at the first element, just add the experience and level
-						if (playerIterator.nextIndex() == 1) {
-							textAreaExperience.append(Long.toString(currPlayer.getExperience()));
-							textAreaLevels.append(Integer.toString(currPlayer.getLevel()));
-						} else {
-							// Add the (valid) player's experience and level data with a comma.
-							textAreaExperience.append(", " + currPlayer.getExperience());
-							textAreaLevels.append(", " + currPlayer.getLevel());	
-						}
+						// Add the player's experience and level data with a comma.
+						textAreaExperience.append(", " + currPlayer.getExperience());
+						textAreaLevels.append(", " + currPlayer.getLevel());
 					}
 				}
 				
@@ -394,18 +391,12 @@ public class SkillTrackerGui {
 				Collections.sort(playersSorted, new PlayerDataComparator().reversed());
 				
 				// Sorts and displays the relative rank of each player based on their experience and level
-				ListIterator<Player> playerSortedIterator = playersSorted.listIterator(); // An iterator for the list of players
-				while (playerSortedIterator.hasNext()) {
-					Player currPlayer = playerSortedIterator.next(); // The current player
-					
-					// If the player is valid, collect their skill rank relative to the others
-					if (currPlayer.getValid()) {
-						int currentPlace = playerSortedIterator.nextIndex(); // The current number of players we've seen
-						String currentSkill = Utility.skills[skillNumber]; // The skill we're collecting data for
-						textAreaRelativeRanking.append(currentPlace + Utility.getPositionSuffix(currentPlace) + "\"" + 
-								currPlayer.getName().trim()+ "\" " + currentSkill + " level: " + currPlayer.getLevel() + 
-								" with " + NumberFormat.getNumberInstance().format(currPlayer.getExperience()) + " xp\n"); // The message to append to the text box
-					}
+				for (int currIndex = 0; currIndex < playersSorted.size(); currIndex++) {
+					Player currPlayer = playersSorted.get(currIndex); // The current player
+					String currentSkill = Utility.skills[skillNumber]; // The skill we're collecting data for
+					textAreaRelativeRanking.append((currIndex + 1) + Utility.getPositionSuffix(currIndex + 1) + "\"" + 
+							currPlayer.getName().trim()+ "\" " + currentSkill + " level: " + currPlayer.getLevel() + 
+							" with " + NumberFormat.getNumberInstance().format(currPlayer.getExperience()) + " xp\n"); // The message to append to the text box
 				}
 				
 				// Handles printing the list of errors to the screen (if there are any)
@@ -415,7 +406,7 @@ public class SkillTrackerGui {
 					// Go through the list of errors, and print out a specific response if it is known why the error
 					// could have occurred, or a generic response otherwise
 					for (int i = 0; i < playerErrors.size(); i++) {
-						if (playerErrors.get(i).getName().length() > Utility.MAX_USERNAME_LENGTH) {
+						if (playerErrors.get(i).getName().trim().length() > Utility.MAX_USERNAME_LENGTH) {
 							textAreaErrors.append("\"" + playerErrors.get(i).getName().trim() + 
 									"\"" + " ERROR! This name contains more than 12 characters.\n");
 						} else {
